@@ -9,9 +9,10 @@ import {
 } from '@ant-design/icons';
 import MenuItem from 'antd/lib/menu/MenuItem';
 import './main.less';
-import { HashRouter, Switch, Route, Link } from 'react-router-dom';
+import { HashRouter, Switch, Route } from 'react-router-dom';
 import User from '../user/user';
 import Room from '../room/room';
+import Record from '../record/record';
 
 const { Header, Sider, Content } = Layout;
 
@@ -30,7 +31,7 @@ export default function Main() {
             <a href="#/room">房间</a>
           </MenuItem>
           <MenuItem key="3" icon={<UploadOutlined />}>
-            订单
+            <a href="#/record">订单</a>
           </MenuItem>
         </Menu>
       </Sider>
@@ -49,6 +50,7 @@ export default function Main() {
         <Content className="content">
           <HashRouter>
             <Switch>
+              <Route path="/record" component={Record} />
               <Route path="/room" component={Room} />
               <Route component={User} />
             </Switch>
