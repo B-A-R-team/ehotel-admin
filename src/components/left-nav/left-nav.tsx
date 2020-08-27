@@ -14,16 +14,19 @@ export default function Main() {
     <>
       <div className="logo">LOGO</div>
       <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-        <MenuItem key="1" icon={<UserOutlined />}>
-          <a href="#/">商家基本信息管理</a>
+        <MenuItem key="1" icon={<UploadOutlined />}>
+          <a href="#/">数据分析</a>
         </MenuItem>
         <MenuItem key="2" icon={<UserOutlined />}>
+          <a href="#/eHotelInfo">商家基本信息管理</a>
+        </MenuItem>
+        <MenuItem key="3" icon={<UserOutlined />}>
           <a href="#/user">用户</a>
         </MenuItem>
-        <MenuItem key="3" icon={<VideoCameraOutlined />}>
+        <MenuItem key="4" icon={<VideoCameraOutlined />}>
           <a href="#/room">房间</a>
         </MenuItem>
-        <MenuItem key="4" icon={<UploadOutlined />}>
+        <MenuItem key="5" icon={<UploadOutlined />}>
           <a href="#/record">订单</a>
         </MenuItem>
       </Menu>
