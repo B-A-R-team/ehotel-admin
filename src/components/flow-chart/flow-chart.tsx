@@ -1,5 +1,11 @@
 import React, { FC, useState, useEffect } from 'react';
 import { Area } from '@ant-design/charts';
+import { Skeleton } from 'antd';
+
+export interface IFlowChartProps {
+  size?: 'normal' | 'small';
+  children?: React.ReactNode;
+}
 
 const data = [
   {
@@ -32,48 +38,69 @@ const data = [
   },
 ];
 
-const FlowChart: FC = () => {
-  const config = {
-    height: 80,
-    title: {
-      visible: false,
-      text: '客流量统计',
+const FlowChart: FC<IFlowChartProps> = ({
+  size = 'normal',
+  children,
+}: IFlowChartProps) => {
+  const configVariant: { [index: string]: object } = {
+    normal: {
+      height: 300,
+      title: {
+        visible: true,
+        text: '客流量统计',
+      },
+      data,
+      xField: 'date',
+      yField: 'flow',
+      smooth: true,
+      padding: 'auto',
+      forceFit: true,
+      color: '#9862e2',
     },
-    data,
-    xField: 'date',
-    yField: 'flow',
-    smooth: true,
-    padding: 'auto',
-    forceFit: true,
-    color: '#9862e2',
-    xAxis: {
-      grid: {
+    small: {
+      height: 80,
+      title: {
         visible: false,
+        text: '客流量统计',
       },
-      tickLine: {
-        visible: false,
+      data,
+      xField: 'date',
+      yField: 'flow',
+      smooth: true,
+      padding: 'auto',
+      forceFit: true,
+      color: '#9862e2',
+      xAxis: {
+        grid: {
+          visible: false,
+        },
+        tickLine: {
+          visible: false,
+        },
+        label: {
+          visible: false,
+        },
       },
-      label: {
-        visible: false,
-      },
-    },
-    yAxis: {
-      grid: {
-        visible: false,
-      },
-      tickLine: {
-        visible: false,
-      },
-      label: {
-        visible: false,
+      yAxis: {
+        grid: {
+          visible: false,
+        },
+        tickLine: {
+          visible: false,
+        },
+        label: {
+          visible: false,
+        },
       },
     },
   };
 
   return (
     <Area
-      {...config}
-      tooltip={{ formatter: (date, flow) => ({ name: '客流量', value: flow }) }}
+      {...configVariant[size]}
+      tooltip={{
+        formatter: (date, flow) => ({ name: '客流量', value: flow }),
+      }}
     />
   );
 };
