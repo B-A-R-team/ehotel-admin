@@ -1,15 +1,14 @@
 import React, { useState, createContext } from 'react'
-import { HashRouter, Switch, Route, Link } from 'react-router-dom';
+import { HashRouter, Switch, Route, Link, BrowserRouter } from 'react-router-dom';
 import { Layout } from 'antd';
 
 import Room from '../room/room';
 import User from '../user/user';
-import EHotelInfo from '../eHotelInfo/EHotelInfo'
 import Main from '../../components/left-nav/main';
+import EHotelRoute from '../eHotelInfo/eHotelRoute'
 import Head from '../../components/header/Header';
-
-import './Admin.less'
-import './Admin.less'
+import Coupon from '../coupon'
+import { AddCoupon } from '../coupon/add-coupon/AddCoupon';
 const { Sider, Content } = Layout;
 export let MyContext: any = createContext(false);
 
@@ -18,7 +17,9 @@ export default () => {
     return (
         <Layout className="main" >
             <Sider trigger={null} collapsible collapsed={collapsed}>
-                <Main />
+                <HashRouter>
+                    <Main />
+                </HashRouter>
             </Sider>
             <Layout className="site-layout">
                 <MyContext.Provider value={{ collapsed, setCollapsed }}>
@@ -27,9 +28,11 @@ export default () => {
                 <Content className="content"  >
                     <HashRouter>
                         <Switch>
-                            <Route path="/eHotelInfo" component={EHotelInfo} />
+                            <Route path="/eHotelInfo" component={EHotelRoute} />
                             <Route path="/room" component={Room} />
                             <Route path="/user" component={User} />
+                            <Route path="/coupon" component={Coupon} />
+                            <Route path="/add-coupon" component={AddCoupon} />
                         </Switch>
                     </HashRouter>
                 </Content>

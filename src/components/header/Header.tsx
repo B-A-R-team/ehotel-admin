@@ -1,5 +1,5 @@
 import React, { useState,useContext } from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
@@ -23,7 +23,7 @@ const Head = () => {
                 {
                     className: 'trigger',
                     onClick: () => {
-                        console.log(1)
+                        console.log(1);
                         setCollapsed(!collapsed);
                     },
                 }
@@ -31,6 +31,5 @@ const Head = () => {
         </Header>
     )
 }
-
 
 export default Head;
