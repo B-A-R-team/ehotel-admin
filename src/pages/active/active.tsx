@@ -1,12 +1,14 @@
 import React from 'react';
 import './active.less';
-import { Card, Image, Row, Col, Tag } from 'antd';
+import { Card, Image, Tag, Spin } from 'antd';
 import {
   SyncOutlined,
   MinusCircleOutlined,
-  ExclamationCircleOutlined,
   PlusOutlined,
+  ClockCircleOutlined,
 } from '@ant-design/icons';
+import useRequest from '../../hooks/useRequest';
+import { Link, useHistory } from 'react-router-dom';
 
 const { Meta } = Card;
 
@@ -56,7 +58,7 @@ const data = [
 // 根据status生成标签
 const tagVariant: { [index: string]: React.ReactNode } = {
   todo: (
-    <Tag icon={<ExclamationCircleOutlined />} color="cyan">
+    <Tag icon={<ClockCircleOutlined />} color="cyan">
       未开始
     </Tag>
   ),
@@ -73,39 +75,49 @@ const tagVariant: { [index: string]: React.ReactNode } = {
 };
 
 const Active = () => {
+  const [loading, startLoading] = useRequest();
+  const history = useHistory();
+
   return (
     <div className="active-page">
-      <div className="active-card-row">
-        <Card className="active-card-item add-active">
-          <PlusOutlined />
-          <span>添加活动</span>
-        </Card>
-        {data.map((item, index) => (
+      <Spin spinning={loading}>
+        <div className="active-card-row">
           <Card
-            className="active-card-item"
-            key={index}
-            cover={
-              <Image
-                style={{ paddingTop: '1rem', paddingBottom: 0 }}
-                src={item['image_url']}
-              />
-            }
+            className="active-card-item add-active"
+            onClick={() => {
+              history.push('/active/add');
+            }}
           >
-            <Meta
-              title={<a href={item['url']}>{item['title']}</a>}
-              description={
-                <>
-                  <a href={item['url']}>{item['desc']}</a>
-                  <div className="footer">
-                    <span>{item['time']}</span>
-                    <span>{tagVariant[item['status']]}</span>
-                  </div>
-                </>
-              }
-            />
+            <PlusOutlined />
+            <span>添加活动</span>
           </Card>
-        ))}
-      </div>
+          {data.map((item, index) => (
+            <Card
+              className="active-card-item"
+              key={index}
+              cover={
+                <Image
+                  style={{ paddingTop: '1rem', paddingBottom: 0 }}
+                  src={item['image_url']}
+                />
+              }
+            >
+              <Meta
+                title={<a href={item['url']}>{item['title']}</a>}
+                description={
+                  <>
+                    <a href={item['url']}>{item['desc']}</a>
+                    <div className="footer">
+                      <span>{item['time']}</span>
+                      <span>{tagVariant[item['status']]}</span>
+                    </div>
+                  </>
+                }
+              />
+            </Card>
+          ))}
+        </div>
+      </Spin>
     </div>
   );
 };

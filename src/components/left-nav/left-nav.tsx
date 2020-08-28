@@ -6,6 +6,7 @@ import {
   BarsOutlined,
   HomeOutlined,
   BulbOutlined,
+  CustomerServiceOutlined,
 } from '@ant-design/icons';
 import MenuItem from 'antd/lib/menu/MenuItem';
 
@@ -29,7 +30,7 @@ export default function Main() {
         <MenuItem key="5" icon={<BarsOutlined />}>
           <a href="#/record">订单</a>
         </MenuItem>{' '}
-        <MenuItem key="6" icon={<BarsOutlined />}>
+        <MenuItem key="6" icon={<CustomerServiceOutlined />}>
           <a href="#/active">活动</a>
         </MenuItem>
       </Menu>

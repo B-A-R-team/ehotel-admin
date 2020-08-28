@@ -10,6 +10,7 @@ import Record from '../record/record';
 import Analysis from '../analysis/analysis';
 import './Admin.less';
 import Active from '../active/active';
+import AddActive from '../add-active/add-active';
 
 const { Sider, Content } = Layout;
 export let MyContext: any = createContext(false);
@@ -32,6 +33,7 @@ export default () => {
               <Route path="/user" component={User} />
               <Route path="/record" component={Record} />
               <Route path="/eHotelInfo" component={EHotelInfo} />
+              <Route path="/active/add" component={AddActive} />
               <Route path="/active" component={Active} />
               <Route component={Analysis} />
             </Switch>
