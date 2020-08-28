@@ -28,6 +28,9 @@ export default function Main() {
         </MenuItem>
         <MenuItem key="5" icon={<BarsOutlined />}>
           <a href="#/record">订单</a>
+        </MenuItem>{' '}
+        <MenuItem key="6" icon={<BarsOutlined />}>
+          <a href="#/active">活动</a>
         </MenuItem>
       </Menu>
     </>
