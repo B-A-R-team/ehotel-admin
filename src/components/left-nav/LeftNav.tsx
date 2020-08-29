@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import MenuItem from 'antd/lib/menu/MenuItem';
 
-import './main.less'
+import './left-nav.less'
 
 const { SubMenu } = Menu;
 
@@ -34,8 +34,8 @@ export default function Main(props: any) {
           <Link to="/room">房间</Link>
         </MenuItem>
         <MenuItem key="4" icon={<UploadOutlined />}>
-          订单
-          </MenuItem>
+          <Link to="/record">订单</Link>
+        </MenuItem>
         <SubMenu
           key="sub1"
           title="优惠卷管理"

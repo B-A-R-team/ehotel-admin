@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Card, Form, Input, InputNumber, Button, Upload, Modal } from 'antd';
 import { LeftOutlined } from '@ant-design/icons'
 import Photo from '../photo/photo'
-import { Map } from 'react-amap'
+// import { Map } from 'react-amap'
 import './update.less'
 
 const MAP_KEY = 'ed51e5c26a85fbed46678eae31b1eee7'
@@ -67,7 +67,7 @@ export default (props: any) => {
                             <span>位置：安阳市</span>
                             <div style={{ width: 100, height: 100 }}>
 
-                                <Map amapkey={MAP_KEY} />
+                                {/* <Map amapkey={MAP_KEY} /> */}
                             </div>
                         </div>
 

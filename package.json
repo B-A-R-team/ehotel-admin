@@ -15,6 +15,7 @@
     "antd": "^4.6.0",
     "antd-img-crop": "^3.10.0",
     "craco-less": "^1.17.0",
+    "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-amap": "^1.2.8",
     "react-dom": "^16.13.1",

@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons';
 
 import {MyContext} from '../../pages/admin/Admin'
-import '../left-nav/main.less'
+import '../left-nav/left-nav.less'
 
 const { Header } = Layout;
 

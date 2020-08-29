@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Divider, Card, Upload } from 'antd';
 import { Link } from 'react-router-dom'
-import { Map } from 'react-amap'
 import './eHotelInfo.less'
 
 export default () => {
