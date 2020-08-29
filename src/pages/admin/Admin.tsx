@@ -4,17 +4,18 @@ import { Layout } from 'antd'
 
 import Room from '../room/room';
 import User from '../user/user';
-import Main from '../../components/left-nav/LeftNav';
+import Main from '../../components/left-nav/left-nav';
 import EHotelRoute from '../eHotelInfo/eHotelRoute'
 import Head from '../../components/header/Header';
 import Coupon from '../coupon'
 import { AddCoupon } from '../coupon/add-coupon/AddCoupon';
 import EHotelInfo from '../eHotelInfo/EHotelInfo';
-
-
-import './Admin.less';
 import Record from '../record/record';
+import Analysis from '../analysis/analysis';
 import './Admin.less';
+import Active from '../active/active';
+import AddActive from '../add-active/add-active';
+
 const { Sider, Content } = Layout;
 export let MyContext: any = createContext(false);
 
@@ -40,6 +41,10 @@ export default () => {
               <Route path="/coupon" component={Coupon} />
               <Route path="/add-coupon" component={AddCoupon} />
               <Route path="/record" component={Record} />
+              <Route path="/eHotelInfo" component={EHotelInfo} />
+              <Route path="/active/add" component={AddActive} />
+              <Route path="/active" component={Active} />
+              <Route component={Analysis} />
             </Switch>
           </HashRouter>
         </Content>

@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, {  } from 'react';
 import { Menu } from 'antd';
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
   UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
+  PieChartOutlined,
+  BarsOutlined,
+  HomeOutlined,
+  BulbOutlined,
+  CustomerServiceOutlined,
+  UploadOutlined
 } from '@ant-design/icons';
 import MenuItem from 'antd/lib/menu/MenuItem';
 
@@ -24,17 +26,23 @@ export default function Main(props: any) {
         mode="inline"
         defaultSelectedKeys={['1']}
       >
-        <MenuItem key="1" icon={<UserOutlined />}>
-          <Link to="/eHotelInfo" >商家基本信息管理</Link>
+         <MenuItem key="1" icon={<PieChartOutlined />}>
+          <a href="#/">数据分析</a>
         </MenuItem>
-        <MenuItem key="2" icon={<UserOutlined />}>
-          <Link to="/user" >用户</Link>
+        <MenuItem key="2" icon={<HomeOutlined />}>
+          <a href="#/eHotelInfo">商家基本信息管理</a>
         </MenuItem>
-        <MenuItem key="3" icon={<VideoCameraOutlined />}>
-          <Link to="/room">房间</Link>
+        <MenuItem key="3" icon={<UserOutlined />}>
+          <a href="#/user">用户</a>
         </MenuItem>
-        <MenuItem key="4" icon={<UploadOutlined />}>
-          <Link to="/record">订单</Link>
+        <MenuItem key="4" icon={<BulbOutlined />}>
+          <a href="#/room">房间</a>
+        </MenuItem>
+        <MenuItem key="5" icon={<BarsOutlined />}>
+          <a href="#/record">订单</a>
+        </MenuItem>{' '}
+        <MenuItem key="6" icon={<CustomerServiceOutlined />}>
+          <a href="#/active">活动</a>
         </MenuItem>
         <SubMenu
           key="sub1"

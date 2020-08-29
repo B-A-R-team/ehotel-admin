@@ -34,12 +34,9 @@ export default (props: any) => {
             <span>&nbsp;修改信息</span>
         </span>
     )
-
     const onFinish = (values: any) => {
         console.log(values);
     };
-
-
     return (
         <div className="site-card-border-less-wrapper">
 
@@ -58,9 +55,11 @@ export default (props: any) => {
                     <Form.Item name={['eHotelInfo', 'email']} label="邮箱" rules={[{ type: 'email' }]}>
                         <Input />
                     </Form.Item>
-
                     <Form.Item name={['eHotelInfo', 'introduction']} label="简介">
                         <Input.TextArea />
+                    </Form.Item>
+                    <Form.Item label="上传头像">
+                        <Photo />
                     </Form.Item>
                     <Form.Item label="地图" >
                         <div className="my-map">
@@ -70,17 +69,13 @@ export default (props: any) => {
                                 {/* <Map amapkey={MAP_KEY} /> */}
                             </div>
                         </div>
-
                     </Form.Item>
+           
                     <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
                         <Button type="primary" htmlType="submit">确定修改</Button>
                     </Form.Item>
-
-                    {/* <Photo /> */}
-
                 </Form>
             </Card>
-
         </div>
     );
 } 
