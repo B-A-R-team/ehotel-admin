@@ -1,11 +1,19 @@
 import React, { useState, createContext } from 'react';
-import { HashRouter, Switch, Route, Link } from 'react-router-dom';
+import {
+  HashRouter,
+  Switch,
+  Route,
+  Link,
+  BrowserRouter,
+} from 'react-router-dom';
 import { Layout } from 'antd';
+import EHotelRoute from '../eHotelInfo/eHotelRoute';
 import Room from '../room/room';
 import User from '../user/user';
-import EHotelInfo from '../eHotelInfo/EHotelInfo';
 import LeftNav from '../../components/left-nav/left-nav';
 import Head from '../../components/header/Header';
+import Coupon from '../coupon';
+import { AddCoupon } from '../coupon/add-coupon/AddCoupon';
 import Record from '../record/record';
 import Analysis from '../analysis/analysis';
 import './Admin.less';
@@ -27,15 +35,20 @@ export default () => {
           <Head />
         </MyContext.Provider>
         <Content className="content">
-          <Switch>
-            <Route path="/room" component={Room} />
-            <Route path="/user" component={User} />
-            <Route path="/record" component={Record} />
-            <Route path="/eHotelInfo" component={EHotelInfo} />
-            <Route path="/active/add" component={AddActive} />
-            <Route path="/active" component={Active} />
-            <Route component={Analysis} />
-          </Switch>
+          <HashRouter>
+            <Switch>
+              <Route path="/eHotelInfo" component={EHotelRoute} />
+              <Route path="/room" component={Room} />
+              <Route path="/user" component={User} />
+              <Route path="/coupon/mycoupon" component={Coupon} />
+              <Route path="/coupon/addcoupon" component={AddCoupon} />
+              <Route path="/record" component={Record} />
+              {/* <Route path="/eHotelInfo" component={EHotelInfo} /> */}
+              <Route path="/active/add" component={AddActive} />
+              <Route path="/active" component={Active} />
+              <Route component={Analysis} />
+            </Switch>
+          </HashRouter>
         </Content>
       </Layout>
     </Layout>

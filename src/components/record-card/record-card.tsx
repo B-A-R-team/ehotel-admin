@@ -125,7 +125,7 @@ const RecordCard: FC<IRecordCardProps<IRecord>> = ({
   startLoading,
 }: IRecordCardProps<IRecord>) => {
   const [able, setAble] = useState(false);
-
+console.log('lalalalalalalala');
   const save = (info: IRecord | null) => {
     setAble(false);
     onClose();
