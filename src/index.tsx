@@ -4,10 +4,13 @@ import './index.less';
 import Admin from './pages/admin/Admin';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
+import { HashRouter } from 'react-router-dom';
 
 ReactDOM.render(
   <ConfigProvider locale={zhCN}>
-    <Admin />
+    <HashRouter>
+      <Admin />
+    </HashRouter>
   </ConfigProvider>,
 
   document.getElementById('root')

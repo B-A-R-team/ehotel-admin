@@ -56,9 +56,11 @@ const UserSearch: FC<IUserSearchProps> = ({
    * 删除
    */
   const doDelete = () => {
-    Modal.warning({
+    Modal.confirm({
       title: '删除',
       content: '确定删除这些数据？',
+      cancelText: '取消',
+      okText: '确认',
       onOk: () => {
         const diff = tableData.filter(
           (item) => !selectedKeys.some((element) => element === item['key'])

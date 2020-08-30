@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Menu } from 'antd';
 import {
   UserOutlined,
@@ -8,32 +8,49 @@ import {
   BulbOutlined,
   CustomerServiceOutlined,
 } from '@ant-design/icons';
-import MenuItem from 'antd/lib/menu/MenuItem';
+import { HashRouter, NavLink, useHistory } from 'react-router-dom';
+import './left-nav.less';
 
-export default function Main() {
+const menuConfig = [
+  { icon: <PieChartOutlined />, url: '/', label: '数据分析' },
+  {
+    key: 2,
+    icon: <HomeOutlined />,
+    url: '/eHotelInfo',
+    label: '商家基本信息管理',
+  },
+  { icon: <UserOutlined />, url: '/user', label: '用户' },
+  { icon: <BulbOutlined />, url: '/room', label: '房间' },
+  { icon: <BarsOutlined />, url: '/record', label: '订单' },
+  { icon: <CustomerServiceOutlined />, url: '/active', label: '活动' },
+];
+
+export default function LeftNav() {
+  const h = useHistory();
+  const pathname = h.location.pathname;
+  const [path, setPath] = useState(pathname);
+
+  const menu = useRef<Menu>();
+
   return (
-    <>
+    <div className="left-nav">
       <div className="logo">LOGO</div>
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-        <MenuItem key="1" icon={<PieChartOutlined />}>
-          <a href="#/">数据分析</a>
-        </MenuItem>
-        <MenuItem key="2" icon={<HomeOutlined />}>
-          <a href="#/eHotelInfo">商家基本信息管理</a>
-        </MenuItem>
-        <MenuItem key="3" icon={<UserOutlined />}>
-          <a href="#/user">用户</a>
-        </MenuItem>
-        <MenuItem key="4" icon={<BulbOutlined />}>
-          <a href="#/room">房间</a>
-        </MenuItem>
-        <MenuItem key="5" icon={<BarsOutlined />}>
-          <a href="#/record">订单</a>
-        </MenuItem>{' '}
-        <MenuItem key="6" icon={<CustomerServiceOutlined />}>
-          <a href="#/active">活动</a>
-        </MenuItem>
-      </Menu>
-    </>
+      <HashRouter>
+        <Menu
+          ref={menu as any}
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['/']}
+          selectedKeys={[path]}
+          onClick={(e) => setPath(e['key'].toString())}
+        >
+          {menuConfig.map((item) => (
+            <Menu.Item key={item['url']} icon={item['icon']}>
+              <NavLink to={item['url']}>{item['label']}</NavLink>
+            </Menu.Item>
+          ))}
+        </Menu>
+      </HashRouter>
+    </div>
   );
 }
