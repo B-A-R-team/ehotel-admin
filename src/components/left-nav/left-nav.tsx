@@ -36,7 +36,7 @@ export default function Main(props: any) {
           <a href="#/user">用户</a>
         </MenuItem>
         <MenuItem key="4" icon={<BulbOutlined />}>
-          <a href="#/room">房间</a>
+          <a href="#/room">房间管理</a>
         </MenuItem>
         <MenuItem key="5" icon={<BarsOutlined />}>
           <a href="#/record">订单</a>
@@ -50,10 +50,10 @@ export default function Main(props: any) {
           icon={<UploadOutlined />}
 
         >
-          <Menu.Item key="sub1" >
+          <Menu.Item key="sub2" >
             <Link to="/coupon">我的优惠卷</Link>
           </Menu.Item>
-          <Menu.Item key="5">
+          <Menu.Item key="sub3">
             <Link to="/add-coupon">添加优惠卷</Link>
           </Menu.Item>
 
