@@ -1,0 +1,32 @@
+.carousels-wrapper {
+  background-color: #f0f2f5;
+  margin-bottom: 1rem;
+  .carousel-cards {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: auto 1fr;
+    .show {
+      .ant-card-body {
+        padding: 1em;
+      }
+    }
+    .carousels {
+      width: 400px;
+      height: 250px;
+      .carousel-image {
+        .ant-image-img {
+          width: 400px;
+          height: 250px;
+        }
+      }
+    }
+  }
+  .show-list {
+    margin-top: 1rem;
+    .image-wrapper {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, 400px);
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import React, { FC, ReactNode, useState } from 'react';
 import { Drawer, Form, Input, Button, Select } from 'antd';
-import { IRecord } from '../../pages/record/record';
+import { IRecord } from '../record';
 import './record-card.less';
 
 const { Item } = Form;

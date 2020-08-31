@@ -2,8 +2,8 @@ import React, { FC, useState } from 'react';
 import { Table, Button, Input, Spin } from 'antd';
 
 import './record.less';
-import RecordSearch from '../../components/record-search/record-search';
-import RecordCard from '../../components/record-card/record-card';
+import RecordSearch from './record-search/record-search';
+import RecordCard from './record-card/record-card';
 import useSelectedRows from '../../hooks/useSelectedRows';
 import useInfoWrapper from '../../hooks/useInfoWrapper';
 import useRequest from '../../hooks/useRequest';

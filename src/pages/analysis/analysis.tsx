@@ -1,13 +1,13 @@
 import React from 'react';
 import './analysis.less';
 import { Row, Col, Card, Skeleton } from 'antd';
-import FlowChart from '../../components/flow-chart/flow-chart';
-import DealChart from '../../components/deal-chart/deal-chart';
-import GrowthRate from '../../components/growth-rate/growth-rate';
-import HotRoom from '../../components/hot-room/hot-room';
-import CentralChart from '../../components/central-chart/central-chart';
+import FlowChart from './flow-chart/flow-chart';
+import DealChart from './deal-chart/deal-chart';
+import GrowthRate from './growth-rate/growth-rate';
+import HotRoom from './hot-room/hot-room';
+import CentralChart from './central-chart/central-chart';
 import useRequest from '../../hooks/useRequest';
-import VipChart from '../../components/vip-chart/vip-chart';
+import VipChart from './vip-chart/vip-chart';
 
 // 配置顶部卡片在不同屏幕大小下的比例
 const headCardConfig = {

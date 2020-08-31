@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Spin, Table, Button, Avatar, Tag } from 'antd';
 import useRequest from '../../hooks/useRequest';
 import useSelectedRows from '../../hooks/useSelectedRows';
-import UserSearch from '../../components/user-search/user-search';
+import UserSearch from './user-search/user-search';
 import './user.less';
 
 export interface IUser {

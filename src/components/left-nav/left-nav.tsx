@@ -8,6 +8,7 @@ import {
   BulbOutlined,
   CustomerServiceOutlined,
   UploadOutlined,
+  BoxPlotOutlined,
 } from '@ant-design/icons';
 import { HashRouter, NavLink, useHistory } from 'react-router-dom';
 import './left-nav.less';
@@ -32,6 +33,7 @@ const menuConfig: ILinkProps[] = [
       { url: '/coupon/addcoupon', label: '添加优惠券', baseUrl: '/coupon' },
     ],
   },
+  { icon: <BoxPlotOutlined />, url: '/carousels', label: '轮播图管理' },
 ];
 
 /**
