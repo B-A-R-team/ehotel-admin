@@ -1,14 +1,5 @@
 import React, { ReactNode, FC, useState, useEffect } from 'react';
-import {
-  Input,
-  Form,
-  Row,
-  Button,
-  Select,
-  Col,
-  Modal,
-  notification,
-} from 'antd';
+import { Input, Form, Row, Button, Select, Col, Modal } from 'antd';
 import './record-search.less';
 import { IRecord } from '../../pages/record/record';
 
@@ -61,21 +52,26 @@ const RecordSearch: FC<IRecordSearchProps> = ({
   useEffect(() => {
     if (selectedKeys.length !== 0) {
       setCanDelete(true);
+    } else {
+      setCanDelete(false);
     }
-  });
+  }, [selectedKeys]);
 
   /**
    * 删除
    */
   const doDelete = () => {
-    Modal.warning({
+    Modal.confirm({
       title: '删除',
       content: '确定删除这些数据？',
+      cancelText: '取消',
+      okText: '确定',
       onOk: () => {
         const diff = tableData.filter(
           (item) => !selectedKeys.some((element) => element === item['key'])
         );
         changeTable(diff);
+        setCanDelete(false);
       },
     });
   };
