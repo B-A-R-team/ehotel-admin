@@ -18,7 +18,8 @@ import Record from '../record/record';
 import Analysis from '../analysis/analysis';
 import './Admin.less';
 import Active from '../active/active';
-import AddActive from '../add-active/add-active';
+import AddActive from '../active/add-active/add-active';
+import Carousels from '../carousels/carousels';
 
 const { Sider, Content } = Layout;
 export let MyContext: any = createContext(false);
@@ -37,6 +38,7 @@ export default () => {
         <Content className="content">
           <HashRouter>
             <Switch>
+              <Route path="/carousels" component={Carousels} />
               <Route path="/eHotelInfo" component={EHotelRoute} />
               <Route path="/room" component={Room} />
               <Route path="/user" component={User} />

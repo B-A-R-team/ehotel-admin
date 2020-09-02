@@ -1,15 +1,16 @@
 import React, { ReactNode, FC, useState, useEffect } from 'react';
 import { Input, Form, Row, Button, Select, Col, Modal } from 'antd';
-import { IUser } from '../../pages/user/user';
+import './record-search.less';
+import { IRecord } from '../record';
 
 const { Item } = Form;
 const { Option } = Select;
 
-export interface IUserSearchProps {
+export interface IRecordSearchProps {
   width?: string | number | (string & {}) | undefined;
   selectedKeys: String[];
   changeTable: Function;
-  tableData: IUser[];
+  tableData: IRecord[];
   startLoading: () => void;
   children?: ReactNode;
 }
@@ -20,22 +21,26 @@ const options = [
     value: 0,
   },
   {
-    label: '普通用户',
+    label: '待入住',
     value: 1,
   },
   {
-    label: '会员',
+    label: '已完成',
     value: 2,
+  },
+  {
+    label: '待付款',
+    value: 3,
   },
 ];
 
-const UserSearch: FC<IUserSearchProps> = ({
+const RecordSearch: FC<IRecordSearchProps> = ({
   width,
   selectedKeys,
   changeTable,
   tableData,
   startLoading,
-}: IUserSearchProps) => {
+}: IRecordSearchProps) => {
   const [canDelete, setCanDelete] = useState(false);
   const [searchInfo, setSearchInfo] = useState({
     id: '',
@@ -60,7 +65,7 @@ const UserSearch: FC<IUserSearchProps> = ({
       title: '删除',
       content: '确定删除这些数据？',
       cancelText: '取消',
-      okText: '确认',
+      okText: '确定',
       onOk: () => {
         const diff = tableData.filter(
           (item) => !selectedKeys.some((element) => element === item['key'])
@@ -94,14 +99,21 @@ const UserSearch: FC<IUserSearchProps> = ({
         <Row className="search-bar">
           <Col>
             <Row className="search-wrapper">
-              <Item label="用户名">
+              <Item label="订单号">
                 <Input
-                  placeholder="请输入用户名"
+                  placeholder="请输入订单号"
                   value={searchInfo['id']}
                   onChange={(e) => changeSearchInfo(e.target.value, 'id')}
                 />
               </Item>
-              <Item label="用户身份">
+              <Item label="手机号">
+                <Input
+                  placeholder="请输入入住人手机号"
+                  value={searchInfo['phone']}
+                  onChange={(e) => changeSearchInfo(e.target.value, 'phone')}
+                />
+              </Item>
+              <Item label="订单状态">
                 <Select
                   defaultValue={options[0]['label']}
                   onChange={(value) => changeSearchInfo(value, 'state')}
@@ -129,4 +141,4 @@ const UserSearch: FC<IUserSearchProps> = ({
   );
 };
 
-export default UserSearch;
+export default RecordSearch;

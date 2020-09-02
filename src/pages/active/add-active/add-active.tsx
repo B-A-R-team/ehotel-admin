@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import useRequest from '../../hooks/useRequest';
+import useRequest from '../../../hooks/useRequest';
 import BraftEditor, { ControlType } from 'braft-editor';
 import 'braft-editor/dist/index.css';
 import { FormInstance } from 'antd/lib/form';
