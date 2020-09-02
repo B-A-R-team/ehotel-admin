@@ -34,8 +34,6 @@ export default function Coupon() {
         setVisible(true)
         setUpdateCouponInfo(item)
     };
-
-
     useEffect(() => {
         const couponInfos = [
             {

@@ -43,7 +43,6 @@ export default () => {
               <Route path="/coupon/mycoupon" component={Coupon} />
               <Route path="/coupon/addcoupon" component={AddCoupon} />
               <Route path="/record" component={Record} />
-              {/* <Route path="/eHotelInfo" component={EHotelInfo} /> */}
               <Route path="/active/add" component={AddActive} />
               <Route path="/active" component={Active} />
               <Route component={Analysis} />
