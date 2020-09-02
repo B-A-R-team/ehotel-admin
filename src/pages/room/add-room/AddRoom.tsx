@@ -11,7 +11,7 @@ import {
     InputNumber,
 } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
-import Demo from '../upload-imgs/uploadImg';
+import UploadImgs from '../upload-imgs/uploadImg';
 
 const layout = {
     labelCol: { span: 3 },
@@ -30,17 +30,17 @@ const validateMessages = {
 };
 export default function AddRoom(props: any) {
     const [roomTypeData, setRoomTypeData] = useState({
-        id:'',
+        id: '',
         roomType: '',
         introduction: ''
     })
     const [roomData, setRoomData] = useState({
-        id:'',
+        id: '',
         roomType: '',
         introduction: '',
         roomNum: '',
         computer: '',
-        imgs: []
+        imgs: ['']
     })
     let houseTypeId = false
     let addHouseId = false
@@ -51,7 +51,7 @@ export default function AddRoom(props: any) {
     useEffect(() => {
         if (houseTypeId) {
             setRoomTypeData({
-                id:'',
+                id: '',
                 roomType: '高级电竞房',
                 introduction: '高配置的电脑'
             })
@@ -59,12 +59,14 @@ export default function AddRoom(props: any) {
         }
         if (addHouseId) {
             setRoomData({
-                id:'2',
+                id: '2',
                 roomType: '大床房',
                 introduction: '舒适，安静',
                 roomNum: '400',
                 computer: 'RTX2080Ti',
-                imgs: []
+                imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                    'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+                ]
             })
         }
     }, [])
@@ -108,32 +110,32 @@ export default function AddRoom(props: any) {
     const detailCard = (
         <Card style={{ marginTop: 10 }} title={<span>{updateStr}房间</span>}>
             <Form {...layout}>
-                <Form.Item  label="房间类型" rules={[{ required: true }]} initialValue="1">
-                    <Select value={roomData.id} onChange={(e:string) => {setRoomData({...roomData,id:e})}}>
+                <Form.Item label="房间类型" rules={[{ required: true }]} initialValue="1">
+                    <Select value={roomData.id} onChange={(e: string) => { setRoomData({ ...roomData, id: e }) }}>
                         {/* map  出来 */}
                         <Select.Option value="1">大床房</Select.Option>
                         <Select.Option value="2">主题大床房</Select.Option>
                         <Select.Option value="3">高配电竞大床房</Select.Option>
                     </Select>
                 </Form.Item>
-                <Form.Item  label="房间号" rules={[{ required: true }]}>
-                    <Input value={roomData.roomNum} onChange={(e:any) => {setRoomData({...roomData,roomNum:e.target.value})}} />
+                <Form.Item label="房间号" rules={[{ required: true }]}>
+                    <Input value={roomData.roomNum} onChange={(e: any) => { setRoomData({ ...roomData, roomNum: e.target.value }) }} />
                 </Form.Item>
-                <Form.Item  label="电脑配置">
-                    <Input.TextArea  value={roomData.computer} onChange={(e:any) => {setRoomData({...roomData,computer:e.target.value})}}/>
+                <Form.Item label="电脑配置">
+                    <Input.TextArea value={roomData.computer} onChange={(e: any) => { setRoomData({ ...roomData, computer: e.target.value }) }} />
                 </Form.Item>
-                <Form.Item  label="房间简介"  >
-                    <Input.TextArea value={roomData.introduction} onChange={(e:any) => {setRoomData({...roomData,introduction:e.target.value})}} />
+                <Form.Item label="房间简介"  >
+                    <Input.TextArea value={roomData.introduction} onChange={(e: any) => { setRoomData({ ...roomData, introduction: e.target.value }) }} />
                 </Form.Item>
                 <Form.Item label="房间图片">
-                    <Demo />
+                    <UploadImgs imgs={roomData.imgs} inMode={!!addHouseId} />
                 </Form.Item>
                 <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 5 }} >
                     <Button type="primary" onClick={handleRoom}>
                         {updateStr}
                     </Button>
                 </Form.Item>
-                </Form>
+            </Form>
         </Card>
     )
     const getFinalCard = (houseTypeId: any, addHouseId: any) => {
