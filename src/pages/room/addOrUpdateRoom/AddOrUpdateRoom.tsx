@@ -28,7 +28,7 @@ const validateMessages = {
         range: '${label} must be between ${min} and ${max}',
     },
 };
-export default function AddRoom(props: any) {
+export default function AddOrUpdateRoom(props: any) {
     const [roomTypeData, setRoomTypeData] = useState({
         id: '',
         roomType: '',
@@ -72,9 +72,7 @@ export default function AddRoom(props: any) {
     }, [])
 
     const updateStr = houseTypeId || addHouseId ? "修改" : "添加"
-    const onFinish = (values: any) => {
-        console.log(values);
-    };
+
     const title = (
         <span>
             <a onClick={(e) => e.preventDefault()}>

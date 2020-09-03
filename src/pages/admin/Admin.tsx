@@ -17,8 +17,7 @@ import { AddCoupon } from '../coupon/add-coupon/AddCoupon';
 import Record from '../record/record';
 import Analysis from '../analysis/analysis';
 import './Admin.less';
-import Active from '../active/active';
-import AddActive from '../active/add-active/add-active';
+import MyActive from '../active';
 import Carousels from '../carousels/carousels';
 
 const { Sider, Content } = Layout;
@@ -45,8 +44,7 @@ export default () => {
               <Route path="/coupon/mycoupon" component={Coupon} />
               <Route path="/coupon/addcoupon" component={AddCoupon} />
               <Route path="/record" component={Record} />
-              <Route path="/active/add" component={AddActive} />
-              <Route path="/active" component={Active} />
+              <Route path="/active" component={MyActive} />
               <Route component={Analysis} />
             </Switch>
           </HashRouter>

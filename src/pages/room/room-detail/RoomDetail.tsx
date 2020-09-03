@@ -135,7 +135,7 @@ export default function RoomDetail(props: any) {
             render: (text: string, record: any) => {
                 return (
                     <>
-                       <a onClick={() => { props.history.push({pathname:'/room/addroom',query:{addHouseId:record.key} } )}}>点击修改</a>
+                       <a onClick={() => { props.history.push({pathname:'/room/addOrUpdateRoom',query:{addHouseId:record.key} } )}}>点击修改</a>
                        {  record.isCheckIn ? (<span>暂无详情</span>) : (<a onClick={() => { }}>查看详情</a>)}
                     </>
                 )

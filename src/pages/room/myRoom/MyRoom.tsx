@@ -111,7 +111,7 @@ export default function Room(props: any) {
       render: (text: string, record: any) => {
         return (
           <Space size="middle">
-            <a onClick={() => { props.history.push({pathname:'/room/addroom',query:{houseTypeId: record.key }}) }}>修改信息</a>
+            <a onClick={() => { props.history.push({pathname:'/room/addOrUpdateRoom',query:{houseTypeId: record.key }}) }}>修改信息</a>
             <a onClick={() => { props.history.push('/room/detail/' + record.key) }}>查看详情</a>
           </Space>
         )
@@ -139,7 +139,7 @@ export default function Room(props: any) {
   )
   const extra = (
     <>
-    <Button type="primary" onClick={() => props.history.push('room/addRoom')}>添加房型&房间</Button>
+    <Button type="primary" onClick={() => props.history.push('/room/addOrUpdateRoom')}>添加房型&房间</Button>
     </>
   )
   return (
