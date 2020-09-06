@@ -81,21 +81,24 @@ function useRequest<T>(
   }
 
   useEffect(() => {
+    if (typeof init !== 'boolean') {
+      if (start) {
+        fn();
+      }
+    }
+  }, []);
+
+  // 模拟请求
+  useEffect(() => {
     if (typeof init === 'boolean') {
-      // 模拟请求
       const tik = setTimeout(() => {
         setLoading(false);
       }, 1000);
       return () => {
         clearTimeout(tik);
       };
-    } else {
-      // 简易请求
-      if (start) {
-        fn();
-      }
     }
-  }, []);
+  });
 
   const startLoading = () => setLoading(true);
 

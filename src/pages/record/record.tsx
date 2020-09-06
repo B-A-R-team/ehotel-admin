@@ -7,6 +7,8 @@ import RecordCard from './record-card/record-card';
 import useSelectedRows from '../../hooks/useSelectedRows';
 import useInfoWrapper from '../../hooks/useInfoWrapper';
 import useRequest from '../../hooks/useRequest';
+import { useHistory } from 'react-router-dom';
+import getQuery from '../../utils/getQuery';
 
 export interface IRecord {
   key: string;
@@ -165,11 +167,12 @@ const Record: FC = () => {
   });
   const [loading, startLoading] = useRequest();
 
+  const query = getQuery('s', /^[0-9a-z]{20}$/);
+
   const columns = [
     {
       title: '订单编号',
       dataIndex: 'key',
-      render: (text: string) => <a>{text}</a>,
       ellipsis: true,
     },
     {
@@ -215,6 +218,7 @@ const Record: FC = () => {
         changeTable={setTableData}
         tableData={tableData}
         startLoading={startLoading}
+        searchData={{ id: query, phone: '', state: '' }}
       />
       <Spin spinning={loading}>
         <Table

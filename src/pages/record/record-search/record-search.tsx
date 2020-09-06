@@ -6,12 +6,19 @@ import { IRecord } from '../record';
 const { Item } = Form;
 const { Option } = Select;
 
+export interface ISearchData {
+  id: string;
+  phone: string;
+  state: string;
+}
+
 export interface IRecordSearchProps {
   width?: string | number | (string & {}) | undefined;
   selectedKeys: String[];
   changeTable: Function;
   tableData: IRecord[];
   startLoading: () => void;
+  searchData: ISearchData;
   children?: ReactNode;
 }
 
@@ -40,13 +47,10 @@ const RecordSearch: FC<IRecordSearchProps> = ({
   changeTable,
   tableData,
   startLoading,
+  searchData = { id: '', phone: '', state: '' },
 }: IRecordSearchProps) => {
   const [canDelete, setCanDelete] = useState(false);
-  const [searchInfo, setSearchInfo] = useState({
-    id: '',
-    phone: '',
-    state: '',
-  });
+  const [searchInfo, setSearchInfo] = useState(searchData);
 
   // 判断是否有选中行
   useEffect(() => {
@@ -56,6 +60,13 @@ const RecordSearch: FC<IRecordSearchProps> = ({
       setCanDelete(false);
     }
   }, [selectedKeys]);
+
+  // 如果传入了ID，则自动搜索一次
+  useEffect(() => {
+    if (searchData['id']) {
+      doSearch();
+    }
+  }, []);
 
   /**
    * 删除
