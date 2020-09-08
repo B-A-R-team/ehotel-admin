@@ -39,13 +39,13 @@ function useRequest<T>(arg: IRequestConfig): [IResponseConfig<T>];
  * @param start 是否立即执行
  */
 function useRequest<T>(
-  arg: IRequestConfig,
+  arg: IRequestConfig | null,
   start?: boolean
 ): [IResponseConfig<T>];
 
 // 实现
 function useRequest<T>(
-  init: boolean | IRequestConfig = true,
+  init: boolean | null | IRequestConfig = true,
   start: boolean = true
 ):
   | [boolean, () => void, React.Dispatch<React.SetStateAction<boolean>>]
@@ -59,7 +59,7 @@ function useRequest<T>(
   let fn: (config?: IRequestConfig) => void = () => {};
 
   if (typeof init !== 'boolean') {
-    fn = async (config = init) => {
+    fn = async (config = init as IRequestConfig) => {
       setLoading(true);
       try {
         const url = config['baseUrl']

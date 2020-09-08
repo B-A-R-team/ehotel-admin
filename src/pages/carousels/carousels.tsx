@@ -5,7 +5,6 @@ import useRequest from '../../hooks/useRequest';
 import ImageCard from './image-card/image-card';
 import { InboxOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
-import { HttpRequestHeader } from 'antd/es/upload/interface';
 
 const { Dragger } = Upload;
 
@@ -36,16 +35,6 @@ const Carousels = () => {
     method: 'get',
   });
 
-  // 模拟登录
-  const [{ data: loginData }] = useRequest<{ code: number; data: any }>({
-    url: 'https://www.barteam.cn:1239/users/login',
-    method: 'post',
-    data: {
-      email: '123456@email.com',
-      pass: '123456',
-    },
-  });
-
   // 删除
   const [{ data: updateData, request }] = useRequest<{
     code: number;
@@ -64,12 +53,6 @@ const Carousels = () => {
     },
     false
   );
-
-  // 模拟登录
-  useEffect(() => {
-    const token = loginData['data'] ? loginData['data']['token'] : '';
-    localStorage.setItem('token', token);
-  }, [loginData]);
 
   /**
    * 删除图片
