@@ -7,7 +7,6 @@ import RecordCard from './record-card/record-card';
 import useSelectedRows from '../../hooks/useSelectedRows';
 import useInfoWrapper from '../../hooks/useInfoWrapper';
 import useRequest from '../../hooks/useRequest';
-import { useHistory } from 'react-router-dom';
 import getQuery from '../../utils/getQuery';
 
 export interface IRecord {
