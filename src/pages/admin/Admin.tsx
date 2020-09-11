@@ -20,6 +20,7 @@ import Analysis from '../analysis/analysis';
 import './Admin.less';
 import MyActive from '../active';
 import Carousels from '../carousels/carousels';
+import Vip from '../vip/vip';
 
 const { Sider, Content } = Layout;
 export let MyContext: any = createContext(false);
@@ -56,6 +57,7 @@ export default () => {
               <Route path="/coupon/addcoupon" component={AddCoupon} />
               <Route path="/record" component={Record} />
               <Route path="/active" component={MyActive} />
+              <Route path="/vip" component={Vip} />
               <Route component={Analysis} />
             </Switch>
           </HashRouter>
