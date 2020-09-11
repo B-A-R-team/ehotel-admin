@@ -33,7 +33,7 @@ export default function UploadImgs(props: any) {
     const { imgs, inMode } = props
     // console.log(methodIn);
     //渲染多次导致样式 略有问题
-    if (inMode) {
+    if (inMode) { 
       const fileList = imgs.map((img: string, index: 1) => ({
         uid: -index,
         name: 'img.png',

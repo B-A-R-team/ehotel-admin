@@ -10,6 +10,7 @@ import {
 import { LeftOutlined } from '@ant-design/icons'
 import UseRequest from '../../../hooks/useRequest'
 import './roomDetail.less'
+import { spawn } from 'child_process';
 
 interface IRoomData {
     key: string;
@@ -58,21 +59,33 @@ export default function RoomDetail(props: any) {
                     computer: '高配电脑',
                     imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
                         'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-                    isCheckIn: true
+                    isCheckIn: true,
+                    bed: '2',
+                    shower: '啦啦啦啦啦舒畅',
+                    computerNum:'1',
+                    people_count:'2'
                 },
                 {
                     key: '2',
                     roomNum: 301,
                     computer: '高配电脑',
                     imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-                    isCheckIn: false
+                    isCheckIn: false,
+                    bed: '2',
+                    shower: '啦啦啦啦啦舒畅',
+                    computerNum:'1',
+                    people_count:'2'
                 },
                 {
                     key: '3',
                     roomNum: 201,
                     computer: '高配电脑',
                     imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-                    isCheckIn: false
+                    isCheckIn: false,
+                    bed: '2',
+                    shower: '啦啦啦啦啦舒畅',
+                    computerNum:'1',
+                    people_count:'2'
 
                 },
                 {
@@ -80,7 +93,11 @@ export default function RoomDetail(props: any) {
                     roomNum: 102,
                     computer: '高配电脑',
                     imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-                    isCheckIn: true
+                    isCheckIn: true,
+                    bed: '2',
+                    shower: '啦啦啦啦啦舒畅',
+                    computerNum:'1',
+                    people_count:'2'
 
                 },
             ];
@@ -95,19 +112,73 @@ export default function RoomDetail(props: any) {
             title: '房间号',
             dataIndex: 'roomNum',
             key: 'roomNum',
+            width: 110,
             render: (text: any, item: any, index: any) => (<a>{text}</a>)
         },
+
         {
             title: '电脑配置',
             dataIndex: 'computer',
             key: 'computer',
+            width: 230,
+            //   电脑配置： cpu   显卡  显示器 主板 内存 键盘 鼠标 耳机 
+            render: (data: string) => {
+                return (
+                    <div className="computer">
+                        <span>cpu：{data}</span>
+                        <span>显卡：{data}</span>
+                        <span>显示器：{data}</span>
+                        <span>主板：{data}</span>
+                        <span>内存：{data}</span>
+                        <span>键盘：{data}</span>
+                        <span>鼠标：{data}</span>
+                        <span>耳机：{data}</span>
+                    </div>
+                )
+            }
+        },
+        {
+            title: '电脑数量',
+            dataIndex: 'computerNum',
+            key: 'computerNum',
+            width: 110,
+            render: (text: any, item: any, index: any) => (<span>{text}个</span>)
+        },
+        {
+            title: '床位',
+            dataIndex: 'bed',
+            key: 'bed',
+            width: 100,
+            render: (bed: string) => {
+                return (
+                    <span>{bed} 个</span>
+                )
+            }
+        },
+        {
+            title: '浴室配置',
+            dataIndex: 'shower',
+            key: 'shower',
+        },
+        {
+            title: '可住人数',
+            dataIndex: 'people_count',
+            key: 'people_count',
+            render:(text:string) => {
+                return (
+                    <>
+                        {text} 人                   
+                    </>
+                )
+
+            }
         },
 
         {
             title: '房间环境',
             render: (e: any,) => {
 
-                return e.imgs.map((item: any,index:number) => {
+                return e.imgs.map((item: any, index: number) => {
                     return (
                         <Image
                             key={index}
@@ -135,8 +206,8 @@ export default function RoomDetail(props: any) {
             render: (text: string, record: any) => {
                 return (
                     <>
-                       <a onClick={() => { props.history.push({pathname:'/room/addOrUpdateRoom',query:{addHouseId:record.key} } )}}>点击修改</a>
-                       {  record.isCheckIn ? (<span>暂无详情</span>) : (<a onClick={() => { }}>查看详情</a>)}
+                        <a onClick={() => { props.history.push({ pathname: '/room/addOrUpdateRoom', query: { addHouseId: record.key } }) }}>点击修改</a>
+                        {record.isCheckIn ? (<span>暂无详情</span>) : (<a onClick={() => { }}>查看详情</a>)}
                     </>
                 )
             }

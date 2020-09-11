@@ -30,10 +30,10 @@ export default () => {
 
   // 判断是否登录
   useEffect(() => {
-    const loginname = localStorage.getItem('loginname');
-    if (!loginname) {
-      h.push('/login');
-    }
+    // const loginname = localStorage.getItem('loginname');
+    // if (!loginname) {
+    //   h.push('/login');
+    // }
   });
 
   return (

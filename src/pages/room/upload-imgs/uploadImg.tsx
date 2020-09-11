@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { Upload, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
-
 function getBase64(file: any) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -14,7 +13,6 @@ function getBase64(file: any) {
 }
 
 export default function UploadImgs(props: any) {
-  console.log(props);
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
   const [previewTitle, setPreviewTitle] = useState('')
@@ -42,7 +40,6 @@ export default function UploadImgs(props: any) {
       }))
       setFileList(fileList)
     }
-    console.log(fileList)
   }, [props])
   const uploadButton = (
     <div>
@@ -69,7 +66,7 @@ export default function UploadImgs(props: any) {
         onPreview={handlePreview}
         onChange={handleChange}
       >
-        {fileList.length >= 8 ? null : uploadButton}
+        {fileList.length >= 5 ? null : uploadButton}
       </Upload>
       <Modal
         visible={previewVisible}

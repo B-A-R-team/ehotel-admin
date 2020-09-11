@@ -28,7 +28,7 @@ export default function Coupon() {
         ]
     )
     const [loading] = useRequest();
-    const [updateCouponInfo,setUpdateCouponInfo] = useState({...couponsOut})
+    const [updateCouponInfo, setUpdateCouponInfo] = useState({ ...couponsOut })
     const showDrawer = (item: any, index: number) => {
         // console.log(item);
         setVisible(true)
@@ -145,50 +145,52 @@ export default function Coupon() {
         })
     }
     return (
+        <>
+            <Card title={title} className="card">
+                {contextHolder}
+                <div className={isNotEmpty ? 'none' : ''}>暂无优惠卷</div>
 
-        <Card title={title} className="card">
-            {contextHolder}
-            <div className={isNotEmpty ? 'none' : ''}>暂无优惠卷</div>
+                <div className="coupon">
+                    {
+                        titleArr.map((cardItem, titleIndex) => {
+                            return (
+                                <Card className="my-card" key={titleIndex} title={(<span style={{ fontSize: 13 }}>{cardItem.title}</span>)}>
+                                    <Spin spinning={loading}>
+                                        <div className="coupons" >
 
-            <div className="coupon">
-                {
-                    titleArr.map((cardItem, titleIndex) => {
-                        return (
-                            <Card className="my-card" key={titleIndex} title={(<span style={{ fontSize: 13 }}>{cardItem.title}</span>)}>
-                                <Spin spinning={loading}>
-                                    <div className="coupons" >
+                                            {
+                                                couponArr[titleIndex].map((item, index) => {
+                                                    return (
 
-                                        {
-                                            couponArr[titleIndex].map((item, index) => {
-                                                return (
+                                                        <div className={cardItem.styles} key={index}>
+                                                            <span className="coupon-name">{item.couponType === 'fullCoupon' ? '满减券' : '打折券'}</span>
+                                                            <span className="coupon-delete" onClick={() => deleteCoupon(titleIndex, index)} >x</span>
+                                                            <Divider />
+                                                            {item.couponType === 'fullCoupon' ? (
+                                                                <span className="discount" >满{item.fullCoupon}&nbsp;减{item.subCoupon}</span>
+                                                            ) :
+                                                                (<span className="discount" >{item.discountCoupon}折</span>)
+                                                            }
 
-                                                    <div className={cardItem.styles} key={index}>
-                                                        <span className="coupon-name">{item.couponType === 'fullCoupon' ? '满减券' : '打折券'}</span>
-                                                        <span className="coupon-delete" onClick={() => deleteCoupon(titleIndex, index)} >x</span>
-                                                        <Divider />
-                                                        {item.couponType === 'fullCoupon' ? (
-                                                            <span className="discount" >满{item.fullCoupon}&nbsp;减{item.subCoupon}</span>
-                                                        ) :
-                                                            (<span className="discount" >{item.discountCoupon}折</span>)
-                                                        }
+                                                            <span className="update-btn" onClick={() => showDrawer(item, index)}>修改</span>
+                                                        </div>
 
-                                                        <span className="update-btn" onClick={() => showDrawer(item, index)}>修改</span>
-                                                    </div>
+                                                    )
+                                                })
+                                            }
 
-                                                )
-                                            })
-                                        }
+                                        </div>
+                                    </Spin>
+                                </Card>
+                            )
+                        })
+                    }
+                </div>
 
-                                    </div>
-                                </Spin>
-                            </Card>
-                        )
-                    })
-                }
-            </div>
+            </Card>
             <DrawerContext.Provider value={{ visible, setVisible }}>
                 <UpdateCoupon couponInfo={updateCouponInfo} />
             </DrawerContext.Provider>
-        </Card>
+        </>
     )
 }
