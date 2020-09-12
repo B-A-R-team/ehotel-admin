@@ -145,7 +145,7 @@ export default function Coupon() {
         })
     }
     return (
-        <>
+        <div>
             <Card title={title} className="card">
                 {contextHolder}
                 <div className={isNotEmpty ? 'none' : ''}>暂无优惠卷</div>
@@ -191,6 +191,6 @@ export default function Coupon() {
             <DrawerContext.Provider value={{ visible, setVisible }}>
                 <UpdateCoupon couponInfo={updateCouponInfo} />
             </DrawerContext.Provider>
-        </>
+        </div>
     )
 }

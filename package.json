@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@amap/amap-jsapi-loader": "0.0.4",
     "@ant-design/charts": "^0.9.13",
     "@ant-design/icons": "^4.2.2",
     "@craco/craco": "^5.6.4",
@@ -21,7 +22,6 @@
     "craco-less": "^1.17.0",
     "moment": "^2.27.0",
     "react": "^16.13.1",
-    "react-amap": "^1.2.8",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",

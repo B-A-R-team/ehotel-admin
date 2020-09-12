@@ -89,7 +89,7 @@ export function AddCoupon() {
                                         initialValue={50}
                                         rules={[{ type: 'number', min: 0 }]}
                                     >
-                                        <InputNumber min={0} defaultValue={50} />
+                                        <InputNumber min={0} />
                                     </Form.Item>
                                 </Form.Item>
                                 <Form.Item label="满减券" >
@@ -102,7 +102,7 @@ export function AddCoupon() {
                                     >
                                         <InputNumber
                                             min={1}
-                                            defaultValue={10}
+                                          
                                             onChange={(e) => { console.log(e); }}
                                         />
                                     </Form.Item>
@@ -118,7 +118,7 @@ export function AddCoupon() {
                                 rules={[{ type: 'number', min: 0, max: 10 }]}
                             >
                                 <InputNumber
-                                    defaultValue={9}
+                                   
                                     min={0}
                                     max={10}
                                     step={0.1}

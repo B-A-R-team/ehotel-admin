@@ -10,7 +10,6 @@ import {
 import { LeftOutlined } from '@ant-design/icons'
 import UseRequest from '../../../hooks/useRequest'
 import './roomDetail.less'
-import { spawn } from 'child_process';
 
 interface IRoomData {
     key: string;
