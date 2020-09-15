@@ -1,5 +1,6 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import { Spin, Table, Button, Avatar, Tag } from 'antd';
+import { Spin, Table, Avatar, Tag } from 'antd';
 import useRequest from '../../hooks/useRequest';
 import useSelectedRows from '../../hooks/useSelectedRows';
 import UserSearch from './user-search/user-search';
@@ -146,6 +147,7 @@ export default function User() {
 
   const [tableData, setTableData] = useState(data);
   const [loading, startLoading] = useRequest();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedKeys, selectedRows, getSelectRows] = useSelectedRows([]);
 
   return (

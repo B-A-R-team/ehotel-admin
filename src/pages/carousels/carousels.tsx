@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect } from 'react';
 import './carousels.less';
 import { Carousel, Image, Spin, Card, Upload, message } from 'antd';

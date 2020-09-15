@@ -1,5 +1,7 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { FC, useState } from 'react';
-import { Table, Button, Input, Spin } from 'antd';
+import { Table, Button, Spin } from 'antd';
 
 import './record.less';
 import RecordSearch from './record-search/record-search';

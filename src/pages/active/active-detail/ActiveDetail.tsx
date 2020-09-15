@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react'
 import {
     Card,
@@ -21,7 +22,7 @@ const { Title, Paragraph, Text } = Typography;
 export default function ActiveDetail(props: any) {
     const title = (
         <span>
-            <a onClick={(e) => e.preventDefault()}>
+            <a  onClick={(e) => e.preventDefault()}>
                 <LeftOutlined onClick={() => { props.history.goBack() }} />
             </a>
             <span>&nbsp;活动详情</span>
@@ -53,6 +54,7 @@ export default function ActiveDetail(props: any) {
         }
         setActiveData(data)
         console.log(props);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     const tagVariant: { [index: string]: React.ReactNode } = {
         todo: (

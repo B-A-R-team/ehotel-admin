@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
 import {
   Card,
@@ -7,7 +8,6 @@ import {
   Table,
   Tag,
   Space,
-  Popconfirm
 
 } from 'antd'
 

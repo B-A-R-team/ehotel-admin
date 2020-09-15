@@ -1,14 +1,12 @@
+/* eslint-disable no-template-curly-in-string */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react'
 import {
     Card,
     Select,
-    Table,
     Input,
-    Tag,
-    Space,
     Button,
     Form,
-    InputNumber,
     Row,
     Col
 } from 'antd'
@@ -21,6 +19,7 @@ const layout = {
     wrapperCol: { span: 10 },
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const validateMessages = {
     required: '${label} is required!',
     types: {
@@ -96,6 +95,7 @@ export default function AddOrUpdateRoom(props: any) {
             })
             setComputerConfig({ CPU: 'i7-1234', displayCard: 'GTX1080Ti', displayer: 'lalala', memory: '8G', keyboard: '黑爵', mouse: '罗技', master: 'nb', headset: 'beats' })
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const updateStr = houseTypeId || addHouseId ? "修改" : "添加"

@@ -3,9 +3,6 @@ import {
   HashRouter,
   Switch,
   Route,
-  Link,
-  BrowserRouter,
-  useHistory,
 } from 'react-router-dom';
 import { Layout } from 'antd';
 import EHotelRoute from '../eHotelInfo/eHotelRoute';
@@ -27,7 +24,6 @@ export let MyContext: any = createContext(false);
 
 export default () => {
   const [collapsed, setCollapsed] = useState(false);
-  const h = useHistory();
 
   // 判断是否登录
   useEffect(() => {

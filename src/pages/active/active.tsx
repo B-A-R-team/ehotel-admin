@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import './active.less';
 import { Card, Image, Tag, Spin } from 'antd';
@@ -8,7 +10,7 @@ import {
   ClockCircleOutlined,
 } from '@ant-design/icons';
 import useRequest from '../../hooks/useRequest';
-import { Link, useHistory } from 'react-router-dom';
+import {  useHistory } from 'react-router-dom';
 
 const { Meta } = Card;
 

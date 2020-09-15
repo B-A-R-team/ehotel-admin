@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, createContext } from 'react';
 import useRequest from '../../hooks/useRequest'
 import { Card, Modal, Divider, Spin } from 'antd'

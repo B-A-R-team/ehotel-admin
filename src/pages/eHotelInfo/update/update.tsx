@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-template-curly-in-string */
 import React, { useState, useRef, useEffect } from 'react'
 import { Card, Form, Input, Button, Row, Col } from 'antd';
 import { LeftOutlined } from '@ant-design/icons'
@@ -31,6 +34,7 @@ export default (props: any) => {
     const [position,setPosition] = useState('')
     useEffect(()=> {
             console.log(position);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     const title = (
         <span>

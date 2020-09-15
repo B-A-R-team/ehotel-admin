@@ -1,7 +1,8 @@
 import React from 'react';
-import { Row, Col, Input, Select, Button, Form, Modal, List } from 'antd';
+import { Row, Col, Input, Button, Form, Modal, List } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { Item } = Form;
 
 export interface IVipSearchProps {

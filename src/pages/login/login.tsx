@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { Tabs, Form, Input, Button, Checkbox, Image } from 'antd';
 import {
@@ -58,6 +60,7 @@ const Login = () => {
       localStorage.setItem('loginname', loginData['data']['user']['nickname']);
       h.push('/');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loginData]);
 
   // 获取localStorage中的email

@@ -1,16 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef, useEffect } from 'react';
 import {
   PageHeader,
   Form,
   Input,
   DatePicker,
-  Upload,
   Button,
   Spin,
   Modal,
 } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import BraftEditor, { ControlType } from 'braft-editor';
 import 'braft-editor/dist/index.css';
 import { FormInstance } from 'antd/lib/form';
@@ -100,6 +99,7 @@ const AddOrUpdateActive = (props: any) => {
       console.log(editorStr)
       formRef.current?.setFieldsValue(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props])
   // 上传图片组件的配置
   const uploadConfig = {

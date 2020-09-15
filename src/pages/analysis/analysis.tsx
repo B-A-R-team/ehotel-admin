@@ -43,7 +43,7 @@ const centerCardConfig = {
 };
 
 const Analysis = () => {
-  const [loading, startLoading] = useRequest();
+  const [loading] = useRequest();
 
   return (
     <div className="analysis">

@@ -1,7 +1,8 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, ReactNode, useEffect } from 'react';
 import {
     Card,
-    Select,
     Table,
     Input,
     Button,

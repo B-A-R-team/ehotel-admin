@@ -43,6 +43,7 @@ export default function UploadImgs(props: any) {
       setFileList(fileList)
     }
     console.log(fileList)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props])
   const uploadButton = (
     <div>

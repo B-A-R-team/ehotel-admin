@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, Switch, Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import EHotelInfoUpdate from '../update/update'
 import EHotelInfo from '../EHotelInfo'
 export default () => {

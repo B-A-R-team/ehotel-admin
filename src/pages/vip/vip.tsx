@@ -3,7 +3,7 @@ import VipCard from './vip-card/vip-card';
 import './vip.less';
 import { IVipInfo } from './vip-card/vip-card';
 import VipSearch from './vip-search/vip-search';
-import { Spin, Modal } from 'antd';
+import { Spin } from 'antd';
 import useRequest from '../../hooks/useRequest';
 
 const data: IVipInfo[] = [

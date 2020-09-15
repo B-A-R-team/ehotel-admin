@@ -1,6 +1,5 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC } from 'react';
 import { Area } from '@ant-design/charts';
-import { Skeleton } from 'antd';
 
 export interface IFlowChartProps {
   size?: 'normal' | 'small';
