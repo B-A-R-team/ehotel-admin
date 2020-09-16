@@ -3,6 +3,7 @@ import {
   HashRouter,
   Switch,
   Route,
+  useHistory
 } from 'react-router-dom';
 import { Layout } from 'antd';
 import EHotelRoute from '../eHotelInfo/eHotelRoute';
@@ -18,19 +19,21 @@ import './Admin.less';
 import MyActive from '../active';
 import Carousels from '../carousels/carousels';
 import Vip from '../vip/vip';
+import storageUtils from '../../utils/storageUtils'
 
 const { Sider, Content } = Layout;
 export let MyContext: any = createContext(false);
 
 export default () => {
   const [collapsed, setCollapsed] = useState(false);
-
+  const h = useHistory();
   // 判断是否登录
   useEffect(() => {
-    // const loginname = localStorage.getItem('loginname');
-    // if (!loginname) {
-    //   h.push('/login');
-    // }
+    const user_info = storageUtils.getUser()
+    console.log(user_info);
+    if (!user_info._id) {
+      h.push('/login');
+    }
   });
 
   return (

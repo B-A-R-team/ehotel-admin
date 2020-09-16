@@ -16,6 +16,7 @@ export default function myAxios(url:string, data={}, type='GET') {
   return new Promise((resolve, reject) => {
     let promise
     // 1. 执行异步ajax请求
+    
     if(type==='GET') { // 发GET请求
       promise = axios.get(url, { // 配置对象
         params: data // 指定请求参数
@@ -36,8 +37,4 @@ export default function myAxios(url:string, data={}, type='GET') {
 
 }
 
-// 请求登陆接口
-// myAxios('/login', {username: 'Tom', passsword: '12345'}, 'POST').then()
-// 添加用户
-// myAxios('/manage/user/add', {username: 'Tom', passsword: '12345', phone: '13712341234'}, 'POST').then()
 

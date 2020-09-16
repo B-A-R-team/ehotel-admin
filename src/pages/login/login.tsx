@@ -11,6 +11,7 @@ import './login.less';
 import useRequest from '../../hooks/useRequest';
 import { useHistory } from 'react-router-dom';
 import img_login_url from './wxlogin.png';
+import storageUtils from '../../utils/storageUtils'
 
 const { TabPane } = Tabs;
 const { Item } = Form;
@@ -56,8 +57,10 @@ const Login = () => {
   useEffect(() => {
     const token = loginData['data'] ? loginData['data']['token'] : '';
     if (token) {
-      localStorage.setItem('token', token);
-      localStorage.setItem('loginname', loginData['data']['user']['nickname']);
+
+      storageUtils.saveToken(token)
+      console.log(loginData.data.user);
+      storageUtils.saveUser(loginData.data.user)
       h.push('/');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
