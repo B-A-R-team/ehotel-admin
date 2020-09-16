@@ -1,5 +1,4 @@
 import { useHistory } from 'react-router-dom';
-import { stringify } from 'querystring';
 
 /**
  * 获取url中的query

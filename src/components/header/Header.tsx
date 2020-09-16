@@ -1,11 +1,8 @@
-import React, { useState,useContext } from 'react';
+import React, { useContext } from 'react';
 import { Layout } from 'antd';
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined,
 } from '@ant-design/icons';
 
 import {MyContext} from '../../pages/admin/Admin'

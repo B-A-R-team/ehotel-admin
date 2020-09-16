@@ -59,7 +59,6 @@ const Login = () => {
     if (token) {
 
       storageUtils.saveToken(token)
-      console.log(loginData.data.user);
       storageUtils.saveUser(loginData.data.user)
       h.push('/');
     }
