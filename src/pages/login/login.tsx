@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, Form, Input, Button, Checkbox, Image } from 'antd';
 import {
   UserOutlined,
@@ -8,105 +8,62 @@ import {
   CopyrightOutlined,
 } from '@ant-design/icons';
 import './login.less';
-import useRequest from '../../hooks/useRequest';
 import { useHistory } from 'react-router-dom';
 import img_login_url from './wxlogin.png';
 import storageUtils from '../../utils/storageUtils'
+import { reqLogin } from '../../api'
 
 const { TabPane } = Tabs;
 const { Item } = Form;
 
-/**
- * 登陆信息
- */
-function useLoginInfo(): [
-  { email: string; pass: string },
-  React.Dispatch<React.SetStateAction<string>>,
-  React.Dispatch<React.SetStateAction<string>>
-] {
-  const [email, setEmail] = useState('');
-  const [pass, setPass] = useState('');
-
-  return [{ email, pass }, setEmail, setPass];
-}
-
 const Login = () => {
   const h = useHistory();
   const [isRemember, setRemember] = useState(false);
-  const [loginInfo, setEmail, setPass] = useLoginInfo();
-  const [{ data: loginData, request }] = useRequest<{
-    code: number;
-    data: any;
-  }>(
-    {
-      url: 'https://www.barteam.cn:1239/users/login',
-      method: 'post',
-      data: loginInfo,
-    },
-    false
-  );
 
-  /**
-   * 登陆
-   */
-  const doLogin = () => {
-    request();
-  };
-
-  // 保存token
   useEffect(() => {
-    const token = loginData['data'] ? loginData['data']['token'] : '';
-    if (token) {
-
-      storageUtils.saveToken(token)
-      storageUtils.saveUser(loginData.data.user)
+    const user_info = storageUtils.getUser()
+    if (user_info.id) {
       h.push('/');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loginData]);
+  }, [])
 
-  // 获取localStorage中的email
-  useEffect(() => {
-    const email = localStorage.getItem('remember_email');
-    if (email) {
-      setEmail(email as string);
-      setRemember(true);
-    }
-  }, []);
 
-  // 保存email到localStorage
-  useEffect(() => {
+  const onFinish = async (values: object) => {
+    console.log(values);
+    const user = await reqLogin(values)
     if (isRemember) {
-      localStorage.setItem('remember_email', loginInfo['email']);
-    } else {
-      localStorage.removeItem('remember_email');
+      storageUtils.saveUser(user.data.user)
+      storageUtils.saveToken(user.data.token)
     }
-  }, [isRemember]);
-
+    h.replace('/')
+  };
   return (
     <div className="login">
       <div className="title">BAR酒店后台管理</div>
       <Tabs defaultActiveKey="1">
         <TabPane tab="邮箱密码登陆" key="1">
-          <Form className="login-form">
-            <Item>
+          <Form className="login-form" onFinish={onFinish} >
+            <Item
+              name="email"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
               <Input
                 size="large"
                 placeholder="请输入邮箱：123456@email.com"
                 type="email"
                 prefix={<UserOutlined />}
-                value={loginInfo['email']}
-                onChange={(e) => setEmail(e.target.value)}
+
               />
             </Item>
-            <Item>
+            <Item
+              name="pass"
+              rules={[{ required: true, message: 'Please input your password!' }]}
+            >
               <Input
                 size="large"
                 placeholder="请输入密码：123456"
                 type="password"
                 prefix={<LockOutlined />}
-                value={loginInfo['pass']}
-                onChange={(e) => setPass(e.target.value)}
               />
             </Item>
             <Item>
@@ -123,8 +80,8 @@ const Login = () => {
             <Item>
               <Button
                 type="primary"
+                htmlType="submit"
                 style={{ width: '100%' }}
-                onClick={doLogin}
               >
                 登陆
               </Button>

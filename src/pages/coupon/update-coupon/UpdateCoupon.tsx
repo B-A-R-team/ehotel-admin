@@ -73,7 +73,7 @@ export default function UpdateCoupon(props: any) {
                 >
                     <Select value={couponInfo.couponType}
                         style={{ width: 120 }} onChange={couponTypeChange}>
-                        <Select.Option value="discountCoupon">打折券</Select.Option>
+                        <Select.Option value="discountCoupon">代金券</Select.Option>
                         <Select.Option value="fullCoupon">满减券</Select.Option>
                     </Select>
 
@@ -108,16 +108,16 @@ export default function UpdateCoupon(props: any) {
                         ) :
                         (
                             <Form.Item
-                                label="打折券"
-                                rules={[{ type: 'number', min: 0, max: 10 }]}
+                                label="代金券"
+                                rules={[{ type: 'number', min: 0, max: 10000 }]}
                             >
                                 <InputNumber
                                     value={couponInfo.discountCoupon}
                                     min={0}
-                                    max={10}
-                                    step={0.1}
-                                    formatter={value => `${value}折`}
-                                    parser={(value: any) => value.replace('折', '')}
+                                    max={10000}
+                                    step={1}
+                                    formatter={value => `${value}元`}
+                                    parser={(value: any) => value.replace('元', '')}
                                     onChange={(e) => { setCouponInfo({ ...couponInfo, discountCoupon: e }) }}
                                 />
                             </Form.Item>

@@ -72,7 +72,7 @@ export function AddCoupon() {
                 <Form.Item initialValue="FullCutCoupon" name={['coupon', 'couponType']} label="优惠券类型" >
 
                     <Select defaultValue="FullCutCoupon" style={{ width: 120 }} onChange={couponTypeChange}>
-                        <Select.Option value="discountCoupon">打折券</Select.Option>
+                        <Select.Option value="discountCoupon">代金券</Select.Option>
                         <Select.Option value="FullCutCoupon">满减券</Select.Option>
                     </Select>
 
@@ -114,17 +114,17 @@ export function AddCoupon() {
                         (
                             <Form.Item
                                 name={['coupon', 'discountCoupon']}
-                                label="打折券"
-                                initialValue={9}
-                                rules={[{ type: 'number', min: 0, max: 10 }]}
+                                label="代金券"
+                                initialValue={10}
+                                rules={[{ type: 'number', min: 0, max: 10000 }]}
                             >
                                 <InputNumber
                                    
                                     min={0}
-                                    max={10}
-                                    step={0.1}
-                                    formatter={value => `${value}折`}
-                                    parser={(value: any) => value.replace('折', '')}
+                                    max={10000}
+                                    step={1}
+                                    formatter={value => `${value}元`}
+                                    parser={(value: any) => value.replace('元', '')}
                                     onChange={() => { }}
                                 />
                             </Form.Item>

@@ -11,6 +11,8 @@ import {
     Col
 } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
+import { reqRoomeTypeCreate } from '../../../api'
+import {reqUpdateRoomType} from '../../../api'
 import UploadImgs from '../upload-imgs/uploadImg';
 import './addOrUpdate.less'
 
@@ -32,10 +34,8 @@ const validateMessages = {
 };
 export default function AddOrUpdateRoom(props: any) {
     const [roomTypeData, setRoomTypeData] = useState({
-        id: '',
         roomType: '',
         roomArea: '',
-        introduction: '',
         floor: ''
     })
     const [roomData, setRoomData] = useState({
@@ -45,10 +45,10 @@ export default function AddOrUpdateRoom(props: any) {
         roomNum: '',
         computer: {},
         imgs: [''],
-        computerNum:'',
-        shower:'',
-        people_count:'',
-        bed:''
+        computerNum: '',
+        shower: '',
+        people_count: '',
+        bed: ''
     })
     const [computerConfig, setComputerConfig] = useState({
         CPU: '',
@@ -60,6 +60,7 @@ export default function AddOrUpdateRoom(props: any) {
         memory: '',
         headset: ''
     })
+    // 这里虽然用的bool类型但是 下面赋值的时候强转为其他类型了
     let houseTypeId = false
     let addHouseId = false
     if (props.location.query) {
@@ -69,14 +70,12 @@ export default function AddOrUpdateRoom(props: any) {
     useEffect(() => {
         // 进入方式   
         if (houseTypeId) {
+           
             setRoomTypeData({
-                id: '',
                 roomType: '高级电竞房',
-                introduction: '高配置的电脑',
                 roomArea: '20',
                 floor: '11'
             })
-            return
         }
         if (addHouseId) {
             setRoomData({
@@ -88,14 +87,23 @@ export default function AddOrUpdateRoom(props: any) {
                 imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
                     'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
                 ],
-                bed:'1',
-                people_count:'2',
-                computerNum:'2',
-                shower:'lalala'
+                bed: '1',
+                people_count: '2',
+                computerNum: '2',
+                shower: 'lalala'
             })
-            setComputerConfig({ CPU: 'i7-1234', displayCard: 'GTX1080Ti', displayer: 'lalala', memory: '8G', keyboard: '黑爵', mouse: '罗技', master: 'nb', headset: 'beats' })
+            setComputerConfig({
+                CPU: 'i7-1234',
+                displayCard: 'GTX1080Ti',
+                displayer: 'lalala',
+                memory: '8G',
+                keyboard: '黑爵',
+                mouse: '罗技',
+                master: 'nb',
+                headset: 'beats'
+            })
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const updateStr = houseTypeId || addHouseId ? "修改" : "添加"
@@ -108,9 +116,15 @@ export default function AddOrUpdateRoom(props: any) {
             <span>&nbsp;{updateStr}房型&房间</span>
         </span>
     )
-    const handleRoomType = () => {
+    const handleRoomType =async () => {
+        if(houseTypeId) {
+            const data = await reqUpdateRoomType({id:houseTypeId,type_name:roomTypeData.roomType})
+            console.log(data);
+        }
+        const data = await reqRoomeTypeCreate(roomTypeData)
+        console.log(data);
         console.log(roomTypeData)
-        
+
     }
     const handleRoom = () => {
         console.log(roomData)
@@ -128,9 +142,8 @@ export default function AddOrUpdateRoom(props: any) {
                         <Form.Item label="房间类型">
                             <Input value={roomTypeData.roomType} onChange={(e: any) => { setRoomTypeData({ ...roomTypeData, roomType: e.target.value }) }} />
                         </Form.Item>
-
-                        <Form.Item label="房型介绍">
-                            <Input.TextArea value={roomTypeData.introduction} onChange={(e: any) => setRoomTypeData({ ...roomTypeData, introduction: e.target.value })} />
+                        <Form.Item label="房间面积" rules={[{ required: true }]}>
+                            <Input value={roomTypeData.roomArea} onChange={(e: any) => setRoomTypeData({ ...roomTypeData, roomArea: e.target.value })} />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
                             <Button type="primary" onClick={handleRoomType}>
@@ -139,11 +152,9 @@ export default function AddOrUpdateRoom(props: any) {
                         </Form.Item>
                     </Col>
                     <Col span={6}>
-                        <Form.Item label="房间面积" rules={[{ required: true }]}>
-                            <Input  value={roomTypeData.roomArea} onChange={(e:any) => setRoomTypeData({...roomTypeData,roomArea:e.target.value})} />
-                        </Form.Item>
+                     
                         <Form.Item label="房型楼层" rules={[{ required: true }]}>
-                            <Input  value={roomTypeData.floor} onChange={(e:any) => setRoomTypeData({...roomTypeData,floor:e.target.value})}/>
+                            <Input value={roomTypeData.floor} onChange={(e: any) => setRoomTypeData({ ...roomTypeData, floor: e.target.value })} />
                         </Form.Item>
                     </Col>
                 </Row>
@@ -186,47 +197,47 @@ export default function AddOrUpdateRoom(props: any) {
                     </Col>
                     <Col span={6}>
                         <Form.Item label="电脑数量" rules={[{ required: true }]}>
-                            <Input  value={roomData.computerNum} onChange={(e: any) => setRoomData({...roomData,computerNum:e.target.value})} />
+                            <Input value={roomData.computerNum} onChange={(e: any) => setRoomData({ ...roomData, computerNum: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="床位数" rules={[{ required: true }]}>
-                            <Input  value={roomData.bed} onChange={(e: any) => setRoomData({...roomData,bed:e.target.value})} />
+                            <Input value={roomData.bed} onChange={(e: any) => setRoomData({ ...roomData, bed: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="入住人数" rules={[{ required: true }]}>
-                            <Input  value={roomData.people_count} onChange={(e: any) => setRoomData({...roomData,people_count:e.target.value})}/>
+                            <Input value={roomData.people_count} onChange={(e: any) => setRoomData({ ...roomData, people_count: e.target.value })} />
                         </Form.Item>
 
                         <Form.Item label="浴室配置" rules={[{ required: true }]}>
-                            <Input.TextArea  value={roomData.shower} onChange={(e: any) => setRoomData({...roomData,shower:e.target.value})} />
+                            <Input.TextArea value={roomData.shower} onChange={(e: any) => setRoomData({ ...roomData, shower: e.target.value })} />
                         </Form.Item>
                     </Col>
                     <Col span={6} >
                         <Form.Item label="CPU" rules={[{ required: true }]}>
-                            <Input value={computerConfig.CPU} onChange={(e: any) => setComputerConfig({...computerConfig,CPU:e.target.value})} />
+                            <Input value={computerConfig.CPU} onChange={(e: any) => setComputerConfig({ ...computerConfig, CPU: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="显卡" rules={[{ required: true }]}>
-                            <Input value={computerConfig.displayCard} onChange={(e: any) => setComputerConfig({...computerConfig,displayCard:e.target.value})} />
+                            <Input value={computerConfig.displayCard} onChange={(e: any) => setComputerConfig({ ...computerConfig, displayCard: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="主板" rules={[{ required: true }]}>
-                            <Input value={computerConfig.master} onChange={(e: any) => setComputerConfig({...computerConfig,master:e.target.value})}/>
+                            <Input value={computerConfig.master} onChange={(e: any) => setComputerConfig({ ...computerConfig, master: e.target.value })} />
                         </Form.Item>
 
                         <Form.Item label="显示器" rules={[{ required: true }]}>
-                            <Input value={computerConfig.displayer} onChange={(e: any) => setComputerConfig({...computerConfig,displayer:e.target.value})} />
+                            <Input value={computerConfig.displayer} onChange={(e: any) => setComputerConfig({ ...computerConfig, displayer: e.target.value })} />
                         </Form.Item>
 
                     </Col>
                     <Col span={6}>
                         <Form.Item label="内存" rules={[{ required: true }]}>
-                            <Input value={computerConfig.memory} onChange={(e: any) => setComputerConfig({...computerConfig,memory:e.target.value})} />
+                            <Input value={computerConfig.memory} onChange={(e: any) => setComputerConfig({ ...computerConfig, memory: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="键盘" rules={[{ required: true }]}>
-                            <Input value={computerConfig.keyboard} onChange={(e: any) => setComputerConfig({...computerConfig,keyboard:e.target.value})} />
+                            <Input value={computerConfig.keyboard} onChange={(e: any) => setComputerConfig({ ...computerConfig, keyboard: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="耳机" rules={[{ required: true }]}>
-                            <Input value={computerConfig.headset} onChange={(e: any) => setComputerConfig({...computerConfig,headset:e.target.value})} />
+                            <Input value={computerConfig.headset} onChange={(e: any) => setComputerConfig({ ...computerConfig, headset: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="鼠标" rules={[{ required: true }]}>
-                            <Input value={computerConfig.mouse} onChange={(e: any) => setComputerConfig({...computerConfig,mouse:e.target.value})} />
+                            <Input value={computerConfig.mouse} onChange={(e: any) => setComputerConfig({ ...computerConfig, mouse: e.target.value })} />
                         </Form.Item>
                     </Col>
                 </Row>

@@ -2,13 +2,13 @@ const USER_KEY = 'user_info';
 const TOKEN = 'token'
 export default {
     saveToken(token:string) {
-        localStorage.setItem(TOKEN,JSON.stringify(token))
+        localStorage.setItem(TOKEN,token)
     },
     getToken() {
-        return JSON.parse(localStorage.getItem(TOKEN) || '');
+        return localStorage.getItem(TOKEN);
     },
     removeToken() {
-        localStorage.setItem(TOKEN,JSON.stringify(TOKEN))
+        localStorage.setItem(TOKEN,TOKEN)
     },
     saveUser(user:any){
         localStorage.setItem(USER_KEY,JSON.stringify(user));

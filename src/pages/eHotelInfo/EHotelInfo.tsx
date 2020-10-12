@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Divider, Card, Upload, Image } from 'antd';
 import { Link } from 'react-router-dom'
 import './eHotelInfo.less'
+import { reqEHotelInfo } from '../../api/index'
+import storageUtils from '../../utils/storageUtils'
 
 export default () => {
 
@@ -17,17 +19,35 @@ export default () => {
     })
 
     useEffect(() => {
-        setTimeout(() => {
+        async function test() {
+            const hotelId = storageUtils.getUser().id
+            const hotelInfo = await reqEHotelInfo(hotelId)
             setloading(false);
-            setInfo({
-                avatar: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-                eHotelName: '123',
-                username: 'xiaoming',
-                phone: '123456',
-                address: 'adadasds',
-                email: 'lts.lyc@qq.com'
-            })
-        }, 500);
+            const { code, data } = hotelInfo
+            if (parseInt(code) === 0) {
+                const {address,phone,desc,title,swiperList} = data
+                setInfo({
+                    avatar: swiperList[0],
+                    eHotelName: title,
+                    username: 'xiaoming',
+                    phone,
+                    address,
+                    email: 'lts.lyc@qq.com'
+                })
+            }
+        }
+        test()
+        // setTimeout(() => {
+        //     setloading(false);
+        //     setInfo({
+        //         avatar: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+        //         eHotelName: '123',
+        //         username: 'xiaoming',
+        //         phone: '123456',
+        //         address: 'adadasds',
+        //         email: 'lts.lyc@qq.com'
+        //     })
+        // }, 500);
 
     }, [])
     const title = (

@@ -3,19 +3,17 @@ import React, { useEffect, useState } from 'react';
 import {
   Card,
   Select,
-  Input,
   Button,
   Table,
   Tag,
   Space,
-
 } from 'antd'
 
-import useRequest from '../../../hooks/useRequest'
+import { reqRoomType } from '../../../api'
 import './myRoom.less'
 
 export default function Room(props: any) {
-  const [loading] = useRequest()
+  const [loading, setLoadibg] = useState(true)
   const [data, setData] = useState([{
     key: '',
     total: 0,
@@ -25,51 +23,36 @@ export default function Room(props: any) {
   }])
   useEffect(() => {
     setData([])
-    setTimeout(() => {
-      const data = [
-        {
-          key: '1',
-          total: 10,
-          rest: 5,
-          introduction: '大床',
-          tags: '大床房',
-          roomArea: '100',
-          checkInArea: '80',
-          roomFloor: '11',
-        },
-        {
-          key: '2',
-          total: 10,
-          rest: 5,
-          tags: '主题大床房',
-          introduction: '有梦幻般的体验',
-          roomArea: '100',
-          checkInArea: '80',
-          roomFloor: '11',
-        },
-        {
-          key: '3',
-          total: 10,
-          rest: 5,
-          introduction: '有高配置的电脑，和高还原的电竞体验',
-          tags: '高配电竞大床房',
-          roomArea: '100',
-          checkInArea: '80',
-          roomFloor: '11',
-        },
-        {
-          key: '4',
-          total: 10,
-          rest: 5,
-          introduction: '床大',
-          tags: '大床房',
-          roomArea: '100',
-          checkInArea: '80',
-          roomFloor: '11',
-        },
-      ];
-      setData(data)
-    }, 1000)
+    async function request() {
+      const roomType = await reqRoomType()
+      console.log(roomType.data);
+      const collatedRoomType = roomType.data.map((item: any) => {
+        item.tags = item.type_name
+        item.key = item.id
+        item.total = 10
+        item.rest = 5
+        return item
+      })
+      console.log(collatedRoomType);
+      setData(collatedRoomType)
+      setLoadibg(false)
+    }
+    request()
+    // setTimeout(() => {
+    //   const data = [
+    //     {
+    //       key: '1',
+    //       total: 10,
+    //       rest: 5,
+    //       introduction: '大床',
+    //       tags: '大床房',
+    //       roomArea: '100',
+    //       checkInArea: '80',
+    //       roomFloor: '11',
+    //     },
+    //   ];
+    //   setData(data)
+    // }, 1000)
 
   }, [])
   const columns = [
@@ -130,11 +113,7 @@ export default function Room(props: any) {
         )
       },
     },
-    {
-      title: '房型描述',
-      dataIndex: 'introduction',
-      key: 'introduction',
-    },
+
     {
       title: 'Action',
       key: 'action',
@@ -157,12 +136,7 @@ export default function Room(props: any) {
         <Select.Option value='clBed'>主题圆床房</Select.Option>
         <Select.Option value='lalala'>双人电影电竞圆床房</Select.Option>
       </Select>
-      <Input
-        style={{ width: 200, margin: '0 10px' }}
-        placeholder='关键字'
-        onChange={(event) => { }}
-
-      />
+      &nbsp;  &nbsp;  &nbsp;
       <Button type='primary' onClick={() => { }}>搜索</Button>
     </span>
 
@@ -176,7 +150,7 @@ export default function Room(props: any) {
     <Card className="card" title={(<span>房间管理</span>)}>
       <Card title={title} extra={extra}>
         <Table
-          columns={columns}
+          columns={columns as any}
           dataSource={data}
           loading={loading}
           bordered

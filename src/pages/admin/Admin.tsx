@@ -30,8 +30,7 @@ export default () => {
   // 判断是否登录
   useEffect(() => {
     const user_info = storageUtils.getUser()
-    console.log(user_info);
-    if (!user_info._id) {
+    if (!user_info.id) {
       h.push('/login');
     }
   });

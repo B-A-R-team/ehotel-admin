@@ -45,7 +45,7 @@ export default function Coupon() {
                 startTime: '2020-08-20 16:00:00',
                 endTime: '2020-08-22 16:00:00',
                 introduction: '123456',
-                discountCoupon: 9
+                discountCoupon: 90
             },
             {
                 couponName: 'xiaoquan',
@@ -55,7 +55,7 @@ export default function Coupon() {
                 startTime: '2020-08-20 16:00:00',
                 endTime: '2020-09-30 16:00:00',
                 introduction: 'mmm',
-                discountCoupon: 9
+                discountCoupon: 90
             },
             {
                 couponName: 'mmmm',
@@ -65,7 +65,7 @@ export default function Coupon() {
                 startTime: '2020-08-20 16:00:00',
                 endTime: '2020-11-29 16:00:00',
                 introduction: 'mmm',
-                discountCoupon: 9
+                discountCoupon: 90
             },
             {
                 couponName: 'xxxx',
@@ -75,7 +75,7 @@ export default function Coupon() {
                 startTime: '2020-11-20 16:00:00',
                 endTime: '2020-11-29 16:00:00',
                 introduction: 'mmm',
-                discountCoupon: 9
+                discountCoupon: 90
             },
             {
                 couponName: 'hhhh',
@@ -85,7 +85,7 @@ export default function Coupon() {
                 startTime: '2020-11-20 16:00:00',
                 endTime: '2020-11-29 16:00:00',
                 introduction: 'mmm',
-                discountCoupon: 9
+                discountCoupon: 90
             },
 
         ]
@@ -164,13 +164,13 @@ export default function Coupon() {
                                                     return (
 
                                                         <div className={cardItem.styles} key={index}>
-                                                            <span className="coupon-name">{item.couponType === 'fullCoupon' ? '满减券' : '打折券'}</span>
+                                                            <span className="coupon-name">{item.couponType === 'fullCoupon' ? '满减券' : '代金券'}</span>
                                                             <span className="coupon-delete" onClick={() => deleteCoupon(titleIndex, index)} >x</span>
                                                             <Divider />
                                                             {item.couponType === 'fullCoupon' ? (
                                                                 <span className="discount" >满{item.fullCoupon}&nbsp;减{item.subCoupon}</span>
                                                             ) :
-                                                                (<span className="discount" >{item.discountCoupon}折</span>)
+                                                                (<span className="discount" >{item.discountCoupon}元</span>)
                                                             }
 
                                                             <span className="update-btn" onClick={() => showDrawer(item, index)}>修改</span>
