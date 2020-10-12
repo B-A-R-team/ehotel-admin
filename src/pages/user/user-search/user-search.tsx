@@ -10,7 +10,7 @@ export interface IUserSearchProps {
   selectedKeys: String[];
   changeTable: Function;
   tableData: IUser[];
-  startLoading: () => void;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   children?: ReactNode;
 }
 
@@ -34,7 +34,7 @@ const UserSearch: FC<IUserSearchProps> = ({
   selectedKeys,
   changeTable,
   tableData,
-  startLoading,
+  setLoading,
 }: IUserSearchProps) => {
   const [canDelete, setCanDelete] = useState(false);
   const [searchInfo, setSearchInfo] = useState({
@@ -63,8 +63,9 @@ const UserSearch: FC<IUserSearchProps> = ({
       okText: '确认',
       onOk: () => {
         const diff = tableData.filter(
-          (item) => !selectedKeys.some((element) => element === item['key'])
+          (item) => !selectedKeys.some((element) => element === item['id'])
         );
+        console.log(selectedKeys);
         changeTable(diff);
         setCanDelete(false);
       },
@@ -85,7 +86,7 @@ const UserSearch: FC<IUserSearchProps> = ({
    */
   const doSearch = () => {
     console.log(searchInfo);
-    startLoading();
+    setLoading(true);
   };
 
   return (
