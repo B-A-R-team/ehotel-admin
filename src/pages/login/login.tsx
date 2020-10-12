@@ -18,7 +18,7 @@ const { Item } = Form;
 
 const Login = () => {
   const h = useHistory();
-  const [isRemember, setRemember] = useState(false);
+  const [isRemember, setRemember] = useState(true);
 
   useEffect(() => {
     const user_info = storageUtils.getUser()

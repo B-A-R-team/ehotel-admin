@@ -6,7 +6,9 @@ import { message } from 'antd'
 axios.interceptors.request.use(function (config) {
   // Do something before request is sent
   const token = storageUtils.getToken();
-  token && (config.headers.Authorization = token)
+  if(token) {
+    config.headers.Authorization = token
+  }
   // const { method, data } = config;
   // if (method && method.toLowerCase() === 'post' && typeof data === 'object') {
   //   config.data = JSON.stringify(data);

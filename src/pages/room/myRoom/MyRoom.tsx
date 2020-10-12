@@ -25,7 +25,7 @@ export default function Room(props: any) {
     setData([])
     async function request() {
       const roomType = await reqRoomType()
-      console.log(roomType.data);
+      // console.log(roomType.data);
       const collatedRoomType = roomType.data.map((item: any) => {
         item.tags = item.type_name
         item.key = item.id
@@ -33,7 +33,7 @@ export default function Room(props: any) {
         item.rest = 5
         return item
       })
-      console.log(collatedRoomType);
+      // console.log(collatedRoomType);
       setData(collatedRoomType)
       setLoadibg(false)
     }

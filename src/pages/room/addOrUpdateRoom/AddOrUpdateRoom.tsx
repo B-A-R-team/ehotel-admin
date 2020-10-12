@@ -1,6 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom';
 import {
     Card,
     Select,
@@ -8,7 +9,8 @@ import {
     Button,
     Form,
     Row,
-    Col
+    Col,
+    message
 } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { reqRoomeTypeCreate } from '../../../api'
@@ -33,6 +35,7 @@ const validateMessages = {
     },
 };
 export default function AddOrUpdateRoom(props: any) {
+    const h = useHistory()
     const [roomTypeData, setRoomTypeData] = useState({
         roomType: '',
         roomArea: '',
@@ -119,7 +122,13 @@ export default function AddOrUpdateRoom(props: any) {
     const handleRoomType =async () => {
         if(houseTypeId) {
             const data = await reqUpdateRoomType({id:houseTypeId,type_name:roomTypeData.roomType})
-            console.log(data);
+            console.log(data.code);
+            if(data.code === 0) {
+                h.replace('/room')
+                return message.success('修改成功');
+            } else {
+                return message.error('修改失败');
+            }
         }
         const data = await reqRoomeTypeCreate(roomTypeData)
         console.log(data);
