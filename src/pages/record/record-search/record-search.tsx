@@ -2,6 +2,7 @@ import React, { ReactNode, FC, useState, useEffect } from 'react';
 import { Input, Form, Row, Button, Select, Col, Modal } from 'antd';
 import './record-search.less';
 import { IRecord } from '../record';
+import { reqAllRecords } from '../../../api/index';
 
 const { Item } = Form;
 const { Option } = Select;
@@ -14,10 +15,9 @@ export interface ISearchData {
 
 export interface IRecordSearchProps {
   width?: string | number | (string & {}) | undefined;
-  selectedKeys: String[];
   changeTable: Function;
   tableData: IRecord[];
-  startLoading: () => void;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   searchData: ISearchData;
   children?: ReactNode;
 }
@@ -43,23 +43,12 @@ const options = [
 
 const RecordSearch: FC<IRecordSearchProps> = ({
   width,
-  selectedKeys,
   changeTable,
   tableData,
-  startLoading,
+  setLoading,
   searchData = { id: '', phone: '', state: '' },
 }: IRecordSearchProps) => {
-  const [canDelete, setCanDelete] = useState(false);
   const [searchInfo, setSearchInfo] = useState(searchData);
-
-  // 判断是否有选中行
-  useEffect(() => {
-    if (selectedKeys.length !== 0) {
-      setCanDelete(true);
-    } else {
-      setCanDelete(false);
-    }
-  }, [selectedKeys]);
 
   // 如果传入了ID，则自动搜索一次
   useEffect(() => {
@@ -69,22 +58,12 @@ const RecordSearch: FC<IRecordSearchProps> = ({
   }, []);
 
   /**
-   * 删除
+   * 模糊查询
    */
-  const doDelete = () => {
-    Modal.confirm({
-      title: '删除',
-      content: '确定删除这些数据？',
-      cancelText: '取消',
-      okText: '确定',
-      onOk: () => {
-        const diff = tableData.filter(
-          (item) => !selectedKeys.some((element) => element === item['key'])
-        );
-        changeTable(diff);
-        setCanDelete(false);
-      },
-    });
+  const fuzzyQuery = (data: IRecord) => {
+    return (query: string) => {
+      return new RegExp(query).test(data['phone']);
+    };
   };
 
   /**
@@ -99,9 +78,29 @@ const RecordSearch: FC<IRecordSearchProps> = ({
   /**
    * 发送搜索请求
    */
-  const doSearch = () => {
-    console.log(searchInfo);
-    startLoading();
+  const doSearch = async () => {
+    setLoading(true);
+    const totalTableData = await reqAllRecords();
+    const { id, phone, state } = searchInfo;
+
+    let newRecords: IRecord[] = totalTableData;
+
+    if (id) {
+      newRecords = totalTableData.filter((item: IRecord) => item['id'] == id);
+    }
+    if (phone) {
+      newRecords = totalTableData.filter((item: IRecord) =>
+        fuzzyQuery(item)(phone)
+      );
+    }
+    if (state !== '未选择' && state !== '') {
+      newRecords = totalTableData.filter(
+        (item: IRecord) => item['status'] === state
+      );
+    }
+
+    changeTable(newRecords);
+    setLoading(false);
   };
 
   return (
@@ -140,11 +139,6 @@ const RecordSearch: FC<IRecordSearchProps> = ({
                 搜索
               </Button>
             </Row>
-          </Col>
-          <Col>
-            <Button danger onClick={doDelete} disabled={!canDelete}>
-              删除
-            </Button>
           </Col>
         </Row>
       </Form>

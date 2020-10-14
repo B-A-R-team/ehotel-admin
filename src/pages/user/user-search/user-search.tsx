@@ -1,5 +1,5 @@
-import React, { ReactNode, FC, useState, useEffect } from 'react';
-import { Input, Form, Row, Button, Select, Col, Modal } from 'antd';
+import React, { ReactNode, FC, useState } from 'react';
+import { Input, Form, Row, Button, Select, Col } from 'antd';
 import { IUser } from '../user';
 import { reqUsers } from '../../../api/index';
 
@@ -33,7 +33,6 @@ const UserSearch: FC<IUserSearchProps> = ({
   changeTable,
   setLoading,
 }: IUserSearchProps) => {
-  const [canDelete, setCanDelete] = useState(false);
   const [searchInfo, setSearchInfo] = useState({
     nickname: '',
     status: 0,
