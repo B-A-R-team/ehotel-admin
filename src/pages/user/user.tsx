@@ -69,7 +69,6 @@ export default function User() {
 
   const [tableData, setTableData] = useState(data);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedKeys, selectedRows, getSelectRows] = useSelectedRows([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -93,22 +92,9 @@ export default function User() {
 
   return (
     <div className="user">
-      <UserSearch
-        selectedKeys={selectedKeys}
-        changeTable={setTableData}
-        tableData={tableData}
-        setLoading={setLoading}
-      />
+      <UserSearch changeTable={setTableData} setLoading={setLoading} />
       <Spin spinning={loading}>
         <Table
-          rowSelection={{
-            type: 'checkbox',
-            onChange: getSelectRows,
-            getCheckboxProps: (user) => ({
-              disabled: user.nickname === 'admin_test', // Column configuration not to be checked
-              name: user.nickname,
-            }),
-          }}
           columns={columns}
           dataSource={tableData}
           pagination={{ pageSize: 7 }}

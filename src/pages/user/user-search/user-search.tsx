@@ -1,15 +1,14 @@
 import React, { ReactNode, FC, useState, useEffect } from 'react';
 import { Input, Form, Row, Button, Select, Col, Modal } from 'antd';
 import { IUser } from '../user';
+import { reqUsers } from '../../../api/index';
 
 const { Item } = Form;
 const { Option } = Select;
 
 export interface IUserSearchProps {
   width?: string | number | (string & {}) | undefined;
-  selectedKeys: String[];
   changeTable: Function;
-  tableData: IUser[];
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   children?: ReactNode;
 }
@@ -31,62 +30,71 @@ const options = [
 
 const UserSearch: FC<IUserSearchProps> = ({
   width,
-  selectedKeys,
   changeTable,
-  tableData,
   setLoading,
 }: IUserSearchProps) => {
   const [canDelete, setCanDelete] = useState(false);
   const [searchInfo, setSearchInfo] = useState({
-    id: '',
-    phone: '',
-    state: '',
+    nickname: '',
+    status: 0,
   });
-
-  // 判断是否有选中行
-  useEffect(() => {
-    if (selectedKeys.length !== 0) {
-      setCanDelete(true);
-    } else {
-      setCanDelete(false);
-    }
-  }, [selectedKeys]);
-
-  /**
-   * 删除
-   */
-  const doDelete = () => {
-    Modal.confirm({
-      title: '删除',
-      content: '确定删除这些数据？',
-      cancelText: '取消',
-      okText: '确认',
-      onOk: () => {
-        const diff = tableData.filter(
-          (item) => !selectedKeys.some((element) => element === item['id'])
-        );
-        console.log(selectedKeys);
-        changeTable(diff);
-        setCanDelete(false);
-      },
-    });
-  };
 
   /**
    * 更改搜索数据
    * @param value 修改后的值
    * @param label 要修改的属性
    */
-  const changeSearchInfo = (value: string, label: string) => {
+  const changeSearchInfo = (value: string | number, label: string) => {
     setSearchInfo((searchInfo) => ({ ...searchInfo, [label]: value }));
+  };
+
+  /**
+   * 模糊查询
+   */
+  const fuzzyQuery = (data: IUser) => {
+    return (query: string) => {
+      return new RegExp(query).test(data['nickname']);
+    };
   };
 
   /**
    * 发送搜索请求
    */
-  const doSearch = () => {
-    console.log(searchInfo);
+  const doSearch = async () => {
+    // 获取查询条件
     setLoading(true);
+    const { nickname, status } = searchInfo;
+
+    // 重新请求数据
+    const res = await reqUsers();
+
+    res['data'].forEach((user: IUser) => {
+      if (!user['avatar_url']) {
+        user['avatar_url'] = '/logo192.png';
+      }
+      user['key'] = user['id'];
+    });
+
+    const totalTableData: IUser[] = res['data'];
+
+    // 获取过滤后的数据
+    let searchRes: IUser[];
+
+    if (status === 1) {
+      searchRes = totalTableData.filter((item) => !item['isVip']);
+    } else if (status === 2) {
+      searchRes = totalTableData.filter((item) => item['isVip']);
+    } else {
+      searchRes = totalTableData;
+    }
+
+    if (nickname) {
+      searchRes = searchRes.filter((item) => fuzzyQuery(item)(nickname));
+    }
+
+    // 载入
+    setLoading(false);
+    changeTable(searchRes!);
   };
 
   return (
@@ -98,17 +106,17 @@ const UserSearch: FC<IUserSearchProps> = ({
               <Item label="用户名">
                 <Input
                   placeholder="请输入用户名"
-                  value={searchInfo['id']}
-                  onChange={(e) => changeSearchInfo(e.target.value, 'id')}
+                  value={searchInfo['nickname']}
+                  onChange={(e) => changeSearchInfo(e.target.value, 'nickname')}
                 />
               </Item>
               <Item label="用户身份">
                 <Select
-                  defaultValue={options[0]['label']}
-                  onChange={(value) => changeSearchInfo(value, 'state')}
+                  defaultValue={options[0]['value']}
+                  onChange={(value) => changeSearchInfo(value, 'status')}
                 >
                   {options.map((item, index) => (
-                    <Option value={item['label']} key={index}>
+                    <Option value={item['value']} key={index}>
                       {item['label']}
                     </Option>
                   ))}
@@ -118,11 +126,6 @@ const UserSearch: FC<IUserSearchProps> = ({
                 搜索
               </Button>
             </Row>
-          </Col>
-          <Col>
-            <Button danger onClick={doDelete} disabled={!canDelete}>
-              删除
-            </Button>
           </Col>
         </Row>
       </Form>

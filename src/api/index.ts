@@ -34,12 +34,17 @@ export const reqUpdateRoomType: any = ({ id, type_name }: any) =>
 // 获取用户
 export const reqUsers = () => myAxios.get('/user/list');
 
-// export const reqDeleteUser = (id:number) => myAxios.delete('/user/')
+// 删除用户
+export const reqDeleteUser = (idList: number[]) =>
+  myAxios.delete('/user/delete', { data: { idList } });
 
+// 获取轮播图
 export const reqSwiperList = () => myAxios.get('/hotel/swiper/1');
 
+// 添加轮播图
 export const reqAddSwiper = (swiper_url: string) =>
   myAxios.put('/hotel/add/swiper', { id: 1, swiper_url });
 
+// 修改轮播图
 export const reqUpdateSwiper = (swiperList: string[]) =>
   myAxios.put('/hotel/update/swiper?id=1', { swiperList });
