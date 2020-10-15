@@ -62,6 +62,7 @@ export const reqAllRecords = async () => {
       id: element['id'],
       create_at: new Date(element['create_at']).toLocaleString(),
       room: element['room']['title'],
+      room_num: element['room']['room_num'],
       name: member['name'],
       phone: member['phone'] || member['id_card'],
       coupon: element['coupon'],
@@ -70,3 +71,6 @@ export const reqAllRecords = async () => {
     };
   });
 };
+
+export const reqChangeStatus = (id: number, status: string) =>
+  myAxios.put('/record/changeStatus', { id, status });

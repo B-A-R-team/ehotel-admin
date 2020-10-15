@@ -16,6 +16,7 @@ export interface IRecord {
   id: string | number;
   create_at: string | Date;
   room: string;
+  room_num: string | number;
   name: string;
   phone: string;
   coupon: string | number;
@@ -27,6 +28,9 @@ export enum RecordStatus {
   waiting = '待入住',
   finish = '已完成',
   unpaid = '待付款',
+  '待入住' = 'waiting',
+  '已完成' = 'finish',
+  '待付款' = 'unpaid',
 }
 
 const data: IRecord[] = [];
@@ -51,6 +55,10 @@ const Record: FC = () => {
     {
       title: '房间',
       dataIndex: 'room',
+    },
+    {
+      title: '房间号',
+      dataIndex: 'room_num',
     },
     {
       title: '入住人',
@@ -110,6 +118,8 @@ const Record: FC = () => {
       </Spin>
       <RecordCard
         visible={show}
+        tableData={tableData}
+        changeTable={setTableData}
         info={wrapperInfo}
         modifyItem={modifyInfoItem}
         setLoading={setLoading}

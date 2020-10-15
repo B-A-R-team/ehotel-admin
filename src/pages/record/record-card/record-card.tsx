@@ -1,13 +1,16 @@
 import React, { FC, ReactNode, useState } from 'react';
 import { Drawer, Form, Input, Button, Select } from 'antd';
-import { IRecord } from '../record';
+import { IRecord, RecordStatus } from '../record';
 import './record-card.less';
+import { reqChangeStatus } from '../../../api/index';
 
 const { Item } = Form;
 const { Option } = Select;
 
 export interface IRecordCardProps<T> {
   visible: boolean;
+  tableData: IRecord[];
+  changeTable: React.Dispatch<React.SetStateAction<IRecord[]>>;
   info: T | null;
   onClose: () => void;
   modifyItem: (arg0: any, arg1: string) => void;
@@ -22,6 +25,7 @@ const keyForLabel: { [index: string]: string } = {
   id: '订单编号',
   create_at: '下单时间',
   room: '房间名称',
+  room_num: '房间号',
   name: '入住人名称',
   phone: '入住人电话',
   coupon: '优惠',
@@ -94,7 +98,16 @@ function generateCardForm<T>(
                 type={typeof item['val'] === 'string' ? 'text' : 'number'}
                 className="info-item-val"
                 value={String(item['val'])}
-                disabled={isDisabled(able, item['index'])}
+                disabled={isDisabled(able, item['index'], [
+                  'id',
+                  'create_at',
+                  'room',
+                  'room_num',
+                  'name',
+                  'phone',
+                  'coupon',
+                  'price',
+                ])}
                 onChange={(e) => modifyItem(e.target.value, item['index'])}
               />
             ) : (
@@ -102,6 +115,7 @@ function generateCardForm<T>(
                 className="info-item-val"
                 defaultValue={String(item['val'])}
                 disabled={!able}
+                onChange={(value) => modifyItem(value, item['index'])}
               >
                 {options.map((item, index) => (
                   <Option value={item['label']} key={index}>
@@ -119,18 +133,33 @@ function generateCardForm<T>(
 
 const RecordCard: FC<IRecordCardProps<IRecord>> = ({
   visible,
+  tableData,
+  changeTable,
   info,
   onClose,
   modifyItem,
   setLoading,
 }: IRecordCardProps<IRecord>) => {
   const [able, setAble] = useState(false);
-  console.log('lalalalalalalala');
-  const save = (info: IRecord | null) => {
+  const save = async (info: IRecord) => {
+    setLoading(true);
+    const recordId = info['id'] as number;
+    const status = info['status'] as '待入住' | '已完成' | '待付款';
+
+    await reqChangeStatus(recordId, RecordStatus[status]);
+
+    const newTableData = tableData.map((item) => {
+      if (item['id'] === recordId) {
+        item['status'] = status;
+      }
+      return item;
+    });
+
+    changeTable(newTableData);
+
     setAble(false);
     onClose();
-    setLoading(true);
-    console.log(info);
+    setLoading(false);
   };
 
   return (
@@ -159,7 +188,13 @@ const RecordCard: FC<IRecordCardProps<IRecord>> = ({
               取消
             </Button>
           )}
-          <Button type="primary" disabled={!able} onClick={() => save(info)}>
+          <Button
+            type="primary"
+            disabled={!able}
+            onClick={() => {
+              save(info!);
+            }}
+          >
             提交
           </Button>
           <span className="submit-tips">如果不提交，则不会保存任何修改</span>
