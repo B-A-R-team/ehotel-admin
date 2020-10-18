@@ -10,6 +10,7 @@ import {
 } from 'antd'
 
 import { reqRoomType } from '../../../api'
+import {PAGE_SIZE} from '../../../utils/constant'
 import './myRoom.less'
 
 export default function Room(props: any) {
@@ -20,17 +21,23 @@ export default function Room(props: any) {
     rest: 0,
     introduction: '',
     tags: '',
+    roomArea:'50',
+    floor:'11'
   }])
   useEffect(() => {
     setData([])
     async function request() {
       const roomType = await reqRoomType()
-      // console.log(roomType.data);
+      // console.log(roomType);
       const collatedRoomType = roomType.data.map((item: any) => {
         item.tags = item.type_name
         item.key = item.id
+        item.roomArea = item.area
+        item.floor = item.floor[0]
         item.total = 10
         item.rest = 5
+        delete item.type_name  
+        delete item.area
         return item
       })
       // console.log(collatedRoomType);
@@ -38,21 +45,6 @@ export default function Room(props: any) {
       setLoadibg(false)
     }
     request()
-    // setTimeout(() => {
-    //   const data = [
-    //     {
-    //       key: '1',
-    //       total: 10,
-    //       rest: 5,
-    //       introduction: '大床',
-    //       tags: '大床房',
-    //       roomArea: '100',
-    //       checkInArea: '80',
-    //       roomFloor: '11',
-    //     },
-    //   ];
-    //   setData(data)
-    // }, 1000)
 
   }, [])
   const columns = [
@@ -60,7 +52,7 @@ export default function Room(props: any) {
       title: '序号',
 
       render: (text: any, item: any, index: any) => {
-        return (<a>{index}</a>)
+        return (<a>{index + 1}</a>)
       }
     },
     {
@@ -82,12 +74,12 @@ export default function Room(props: any) {
     },
     {
       title: '房间楼层',
-      dataIndex: 'roomFloor',
-      key: 'roomFloor',
+      dataIndex: 'floor',
+      key: 'floor',
       width: 120,
-      render: (roomFloor: string) => {
+      render: (floor: string) => {
         return (
-          <span>{roomFloor} 层</span>
+          <span>{floor} 层</span>
         )
       }
     },
@@ -155,8 +147,8 @@ export default function Room(props: any) {
           loading={loading}
           bordered
           pagination={{
-            defaultPageSize: 7,
-            total: 4,
+            defaultPageSize: PAGE_SIZE,
+            total: data.length,
             showQuickJumper: true,
             onChange: (e) => { console.log(e); },
             position: ['bottomCenter']

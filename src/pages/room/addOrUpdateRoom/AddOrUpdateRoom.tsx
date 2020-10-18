@@ -10,11 +10,13 @@ import {
     Form,
     Row,
     Col,
-    message
+    message,
+    InputNumber
 } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
-import { reqRoomeTypeCreate } from '../../../api'
-import {reqUpdateRoomType} from '../../../api'
+import { reqRoomType, reqRoomeTypeCreate, reqAddRoom, reqRoomById, reqUpdateRoom } from '../../../api'
+import { reqUpdateRoomType } from '../../../api'
+import storageUtils from '../../../utils/storageUtils'
 import UploadImgs from '../upload-imgs/uploadImg';
 import './addOrUpdate.less'
 
@@ -22,46 +24,72 @@ const layout = {
     labelCol: { span: 10 },
     wrapperCol: { span: 10 },
 };
+interface ILabel {
+    label: string;
+    attrName: string;
+}
+
+const labelRoomInfo1: ILabel[] = [
+    { label: '房间号', attrName: 'roomNum' },
+    { label: '房间价格', attrName: 'price' },
+    { label: '房间简介', attrName: 'introduction' },
+
+]
+const labelRoomInfo: ILabel[] = [
+    { label: '电脑数量', attrName: 'computer_count' },
+    { label: '人数', attrName: 'people_count' },
+    { label: '床位量', attrName: 'bed_count' },
+    { label: '浴室配置', attrName: 'bathroom' },
+
+]
+const labelComputer: ILabel[] = [
+    { label: 'cpu', attrName: 'cpu' },
+    { label: '显卡', attrName: 'gpu' },
+    { label: '主板', attrName: 'mainboard' },
+    { label: '显示器', attrName: 'device' },
+
+]
+const labelComputer2: ILabel[] = [
+    { label: '内存', attrName: 'memory' },
+    { label: '键盘', attrName: 'keyboard' },
+    { label: '耳机', attrName: 'earphone' },
+    { label: '鼠标', attrName: 'mouse' },
+
+]
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const validateMessages = {
-    required: '${label} is required!',
-    types: {
-        email: '${label} is not validate email!',
-        number: '${label} is not a validate number!',
-    },
-    number: {
-        range: '${label} must be between ${min} and ${max}',
-    },
-};
 export default function AddOrUpdateRoom(props: any) {
     const h = useHistory()
     const [roomTypeData, setRoomTypeData] = useState({
         roomType: '',
-        roomArea: '',
+        roomArea: 50,
         floor: ''
     })
     const [roomData, setRoomData] = useState({
         id: '',
-        roomType: '',
         introduction: '',
         roomNum: '',
-        computer: {},
         imgs: [''],
-        computerNum: '',
-        shower: '',
+        price: '',
+        title:''
+
+    })
+
+    const [roomInfo, setRoomInfo] = useState({
+        computer_count: '',
+        bathroom: '',
         people_count: '',
-        bed: ''
+        bed_count: ''
     })
     const [computerConfig, setComputerConfig] = useState({
-        CPU: '',
-        master: '',
-        keyboard: '',
-        mouse: '',
-        displayCard: '',
-        displayer: '',
-        memory: '',
-        headset: ''
+        cpu: '',
+        mainboard: '', // 主板
+        keyboard: '',  //键盘
+        mouse: '',  //鼠标
+        gpu: '',  //显卡
+        device: '',  //显示器
+        memory: '', //内存
+        earphone: ''  //耳机
     })
     // 这里虽然用的bool类型但是 下面赋值的时候强转为其他类型了
     let houseTypeId = false
@@ -70,40 +98,57 @@ export default function AddOrUpdateRoom(props: any) {
         houseTypeId = props.location.query.houseTypeId
         addHouseId = props.location.query.addHouseId
     }
+    let [selectArr, setSelectArr] = useState([])
     useEffect(() => {
-        // 进入方式   
+        reqRoomType().then((data: any) => {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            setSelectArr(data.data)
+            // console.log(data.data);
+        })
+
+
+        async function getRoomType() {
+            const roomType = await reqRoomType()
+            if (roomType.code === 0) {
+                const roomTypeInfo = roomType.data.find((item: any) => item.id === houseTypeId)
+                // console.log(roomTypeInfo);
+                setRoomTypeData({
+                    roomType: roomTypeInfo.type_name,
+                    roomArea: roomTypeInfo.area,
+                    floor: roomTypeInfo.floor[0]
+                })
+            }
+        }
+        // 进入方式
         if (houseTypeId) {
-           
-            setRoomTypeData({
-                roomType: '高级电竞房',
-                roomArea: '20',
-                floor: '11'
-            })
+            getRoomType()
         }
         if (addHouseId) {
-            setRoomData({
-                id: '2',
-                roomType: '大床房',
-                introduction: '舒适，安静',
-                roomNum: '400',
-                computer: { CPU: 'i7-1234', displayCard: 'GTX1080Ti', displayer: 'lalala', memory: '8G', keyboard: '黑爵', mouse: '罗技', master: 'nb', headset: 'beats' },
-                imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                    'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-                ],
-                bed: '1',
-                people_count: '2',
-                computerNum: '2',
-                shower: 'lalala'
-            })
-            setComputerConfig({
-                CPU: 'i7-1234',
-                displayCard: 'GTX1080Ti',
-                displayer: 'lalala',
-                memory: '8G',
-                keyboard: '黑爵',
-                mouse: '罗技',
-                master: 'nb',
-                headset: 'beats'
+            reqRoomById(addHouseId).then((res: any) => {
+                const { data } = res
+                console.log(res);
+                let myRoomInfo = {
+                    id: data.type.id.toString() || '未知错误',
+                    title: data.title,
+                    introduction: data.desc,
+                    roomNum: data.room_num,
+                    price: data.new_price,
+                    roomInfo: JSON.parse(data.room_info || "{}"),
+                    computerInfo: JSON.parse(data.computer_info || "{}"),
+                    imgs: JSON.parse(data.img_url || "[]")
+                }
+                console.log(myRoomInfo);
+
+                setRoomData({
+                    id: myRoomInfo.id,
+                    introduction: myRoomInfo.introduction,
+                    imgs: myRoomInfo.imgs,
+                    price: myRoomInfo.price,
+                    roomNum: myRoomInfo.roomNum,
+                    title:myRoomInfo.title
+                })
+                setRoomInfo({ ...myRoomInfo.roomInfo })
+                setComputerConfig({ ...myRoomInfo.computerInfo })
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,25 +164,65 @@ export default function AddOrUpdateRoom(props: any) {
             <span>&nbsp;{updateStr}房型&房间</span>
         </span>
     )
-    const handleRoomType =async () => {
-        if(houseTypeId) {
-            const data = await reqUpdateRoomType({id:houseTypeId,type_name:roomTypeData.roomType})
+    //添加或修改房间类型
+    const handleRoomType = async () => {
+        if (houseTypeId) {
+            const data = await reqUpdateRoomType({
+                id: houseTypeId,
+                type_name: roomTypeData.roomType,
+                area: roomTypeData.roomArea,
+                floor: roomTypeData.floor[0]
+            })
             console.log(data.code);
-            if(data.code === 0) {
+            if (data.code === 0) {
                 h.replace('/room')
                 return message.success('修改成功');
             } else {
                 return message.error('修改失败');
             }
         }
+        console.log(roomTypeData)
         const data = await reqRoomeTypeCreate(roomTypeData)
         console.log(data);
         console.log(roomTypeData)
+        return message.success('添加成功');
 
     }
-    const handleRoom = () => {
-        console.log(roomData)
-        console.log(computerConfig)
+    //添加或修改房间
+    const handleRoom = async () => {
+        const userInfo = storageUtils.getUser()
+        const computer_info = JSON.stringify(computerConfig)
+        const room_info = JSON.stringify(roomInfo)
+        // 找到当前选中type_name
+        const seletTitle =  selectArr.find((item:any) => item.id.toString() === roomData.id) || {type_name:''}
+        const data = {
+            title:seletTitle.type_name,
+            room_num: roomData.roomNum,
+            new_price: roomData.price,
+            desc: roomData.introduction,
+            img_url: JSON.stringify(roomData.imgs),
+            room_info: room_info,
+            computer_info: computer_info,
+            typeId: roomData.id,
+            hotelId: userInfo.id
+        }
+        if (addHouseId) {
+            console.log(data);
+            const res = await reqUpdateRoom({ id: addHouseId, ...data })
+            console.log(res);
+            if (res.code === 0) {
+                return message.success('修改成功')
+
+            } else {
+                return message.error('修改失败')
+
+            }
+        }
+        const res = await reqAddRoom(data)
+        console.log(res);
+        if (res.code === 0) {
+            message.success('添加成功');
+        }
     }
 
     const typeCard = (
@@ -152,7 +237,10 @@ export default function AddOrUpdateRoom(props: any) {
                             <Input value={roomTypeData.roomType} onChange={(e: any) => { setRoomTypeData({ ...roomTypeData, roomType: e.target.value }) }} />
                         </Form.Item>
                         <Form.Item label="房间面积" rules={[{ required: true }]}>
-                            <Input value={roomTypeData.roomArea} onChange={(e: any) => setRoomTypeData({ ...roomTypeData, roomArea: e.target.value })} />
+                            <InputNumber value={roomTypeData.roomArea} onChange={(e: any) => {
+                                console.log(e);
+                                return setRoomTypeData({ ...roomTypeData, roomArea: parseInt(e) })
+                            }} />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
                             <Button type="primary" onClick={handleRoomType}>
@@ -161,7 +249,7 @@ export default function AddOrUpdateRoom(props: any) {
                         </Form.Item>
                     </Col>
                     <Col span={6}>
-                     
+
                         <Form.Item label="房型楼层" rules={[{ required: true }]}>
                             <Input value={roomTypeData.floor} onChange={(e: any) => setRoomTypeData({ ...roomTypeData, floor: e.target.value })} />
                         </Form.Item>
@@ -181,20 +269,16 @@ export default function AddOrUpdateRoom(props: any) {
                         <Form.Item label="房间类型" rules={[{ required: true }]} initialValue="1">
                             <Select value={roomData.id} onChange={(e: string) => { setRoomData({ ...roomData, id: e }) }}>
                                 {/* map  出来 */}
-                                <Select.Option value="1">大床房</Select.Option>
-                                <Select.Option value="2">主题大床房</Select.Option>
-                                <Select.Option value="3">高配电竞大床房</Select.Option>
+                                {
+                                    selectArr.map((item: any, index: number) => {
+                                        return (
+                                            <Select.Option value={item.id.toString()} key={index}>{item.type_name}</Select.Option>
+                                        )
+                                    })
+                                }
                             </Select>
                         </Form.Item>
-                        <Form.Item label="房间号" rules={[{ required: true }]}>
-                            <Input value={roomData.roomNum} onChange={(e: any) => { setRoomData({ ...roomData, roomNum: e.target.value }) }} />
-                        </Form.Item>
-                        {/* <Form.Item label="电脑配置">
-                            <Input.TextArea value={roomData.computer} onChange={(e: any) => { setRoomData({ ...roomData, computer: e.target.value }) }} />
-                        </Form.Item> */}
-                        <Form.Item label="房间简介"  >
-                            <Input.TextArea value={roomData.introduction} onChange={(e: any) => { setRoomData({ ...roomData, introduction: e.target.value }) }} />
-                        </Form.Item>
+                        {getForm(roomData, setRoomData, labelRoomInfo1)}
                         <Form.Item label="房间图片" wrapperCol={{ span: 24 }}>
                             <UploadImgs imgs={roomData.imgs} inMode={!!addHouseId} />
                         </Form.Item>
@@ -205,49 +289,13 @@ export default function AddOrUpdateRoom(props: any) {
                         </Form.Item>
                     </Col>
                     <Col span={6}>
-                        <Form.Item label="电脑数量" rules={[{ required: true }]}>
-                            <Input value={roomData.computerNum} onChange={(e: any) => setRoomData({ ...roomData, computerNum: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="床位数" rules={[{ required: true }]}>
-                            <Input value={roomData.bed} onChange={(e: any) => setRoomData({ ...roomData, bed: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="入住人数" rules={[{ required: true }]}>
-                            <Input value={roomData.people_count} onChange={(e: any) => setRoomData({ ...roomData, people_count: e.target.value })} />
-                        </Form.Item>
-
-                        <Form.Item label="浴室配置" rules={[{ required: true }]}>
-                            <Input.TextArea value={roomData.shower} onChange={(e: any) => setRoomData({ ...roomData, shower: e.target.value })} />
-                        </Form.Item>
+                        {getForm(roomInfo, setRoomInfo, labelRoomInfo)}
                     </Col>
                     <Col span={6} >
-                        <Form.Item label="CPU" rules={[{ required: true }]}>
-                            <Input value={computerConfig.CPU} onChange={(e: any) => setComputerConfig({ ...computerConfig, CPU: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="显卡" rules={[{ required: true }]}>
-                            <Input value={computerConfig.displayCard} onChange={(e: any) => setComputerConfig({ ...computerConfig, displayCard: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="主板" rules={[{ required: true }]}>
-                            <Input value={computerConfig.master} onChange={(e: any) => setComputerConfig({ ...computerConfig, master: e.target.value })} />
-                        </Form.Item>
-
-                        <Form.Item label="显示器" rules={[{ required: true }]}>
-                            <Input value={computerConfig.displayer} onChange={(e: any) => setComputerConfig({ ...computerConfig, displayer: e.target.value })} />
-                        </Form.Item>
-
+                        {getForm(computerConfig, setComputerConfig, labelComputer)}
                     </Col>
                     <Col span={6}>
-                        <Form.Item label="内存" rules={[{ required: true }]}>
-                            <Input value={computerConfig.memory} onChange={(e: any) => setComputerConfig({ ...computerConfig, memory: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="键盘" rules={[{ required: true }]}>
-                            <Input value={computerConfig.keyboard} onChange={(e: any) => setComputerConfig({ ...computerConfig, keyboard: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="耳机" rules={[{ required: true }]}>
-                            <Input value={computerConfig.headset} onChange={(e: any) => setComputerConfig({ ...computerConfig, headset: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="鼠标" rules={[{ required: true }]}>
-                            <Input value={computerConfig.mouse} onChange={(e: any) => setComputerConfig({ ...computerConfig, mouse: e.target.value })} />
-                        </Form.Item>
+                        {getForm(computerConfig, setComputerConfig, labelComputer2)}
                     </Col>
                 </Row>
             </Form>
@@ -280,27 +328,43 @@ export default function AddOrUpdateRoom(props: any) {
     )
 }
 
-//map  方法
-// const labels = [[{ label: '电脑数量', value: 'computerNum' }, { label: '床位数', value: 'bed' }, { label: '入住人数', value: 'checkInNum' }, { label: '浴室配置', value: 'shower' }],
-// [{ label: 'CPU', value: 'CPU' }, { label: '显卡', value: 'xinaka' }, { label: '主板', value: 'zhuban' }, { label: '显示器', value: 'xianshiqi' }],
-// [{ label: '内存', value: 'neicun' }, { label: '键盘', value: 'jianpan' }, { label: '耳机', value: 'erji' }, { label: '鼠标', value: 'shubiao' }]]
-// const getFormItem = (labels: string[][], roomData: any) => {
-//     return labels.map((colItem: string[], colIndex: number) => {
-//         return (
-//             <Col span={6} key={colIndex}>
-//                 {
-//                     colItem.map((item: any, index: number) => {
-//                         return (
-//                             <Form.Item label={item.label} rules={[{ required: true }]} key={index}>
-//                                 {
+function getForm(state: any, setState: any, label: any) {
+    return label.map((item: ILabel, index: number) => {
+        if (item.label === '浴室配置') {
+            return (
+                <Form.Item label={item.label}  key={index}>
+                    <Input.TextArea value={state[item.attrName]} onChange={(e: any) => {
+                        let _state = { ...state }
+                        _state[item.attrName] = e.target.value
+                        return setState(_state)
+                    }} />
+                </Form.Item>
+            )
+           
+        } else if(item.label === '房间价格' || item.label === '电脑数量' || item.label === '床位量' || item.label === '人数') {
+            return (
+                <Form.Item label={item.label} key={index}>
+                    <InputNumber value={state[item.attrName]} onChange={(e: any) => {
+                        let _state = { ...state }
+                        _state[item.attrName] = parseInt(e)
+                        // InputNumber 类型 在添加的时候 state[item.attrName] 是string类型 但是没有报错
+                        // console.log(typeof _state[item.attrName]);
+                        return setState(_state)
+                    }} />
+                </Form.Item>
+            )
+        }
+        else {
+            return (
+                <Form.Item label={item.label} key={index}>
+                    <Input value={state[item.attrName]} onChange={(e: any) => {
+                        let _state = { ...state }
+                        _state[item.attrName] = e.target.value
+                        return setState(_state)
+                    }} />
+                </Form.Item>
+            )
+        }
 
-//                                 }
-//                                 <Input value={roomData[item.value]} onChange={(e: any) => setRoomData({ ...roomData, value:e.target.value})} />
-//                             </Form.Item>
-//                         )
-//                     })
-//                 }
-//             </Col>
-//         )
-//     })
-// }
+    })
+}

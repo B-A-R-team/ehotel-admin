@@ -5,6 +5,7 @@ import { Card, Modal, Divider, Spin } from 'antd'
 
 import UpdateCoupon from './update-coupon/UpdateCoupon'
 import './coupon.less'
+import { reqAllCoupon } from '../../api';
 
 export let DrawerContext: any = createContext(false)
 
@@ -36,6 +37,9 @@ export default function Coupon() {
         setUpdateCouponInfo(item)
     };
     useEffect(() => {
+        reqAllCoupon().then((res:any) => {
+            console.log(res);
+        })
         const couponInfos = [
             {
                 couponName: 'daquan',

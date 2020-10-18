@@ -9,9 +9,10 @@ import {
     Image
 } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
-import UseRequest from '../../../hooks/useRequest'
+import { reqRoomByTypeId } from '../../../api'
 import './roomDetail.less'
-
+import { PAGE_SIZE } from '../../../utils/constant'
+ 
 interface IRoomData {
     key: string;
     roomNum: number;
@@ -20,14 +21,15 @@ interface IRoomData {
     isCheckIn: boolean;
 }
 export default function RoomDetail(props: any) {
-    const [loading] = UseRequest()
+    const [loading, setLoading] = useState(true)
     const [profileState, setProfileState] = useState(props)
     const [data, setData] = useState([{
         key: '',
         roomNum: 0,
-        computer: '',
+        computer: {},
         imgs: [''],
-        isCheckIn: false
+        isCheckIn: false,
+        roomInfo: {}
     }])
     const title = (
         <span>
@@ -51,61 +53,60 @@ export default function RoomDetail(props: any) {
     )
     useEffect(() => {
         setData([])
-        setTimeout(() => {
-            const data = [
-                {
-                    key: '1',
-                    roomNum: 101,
-                    computer: '高配电脑',
-                    imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                        'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-                    isCheckIn: true,
-                    bed: '2',
-                    shower: '啦啦啦啦啦舒畅',
-                    computerNum:'1',
-                    people_count:'2'
-                },
-                {
-                    key: '2',
-                    roomNum: 301,
-                    computer: '高配电脑',
-                    imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-                    isCheckIn: false,
-                    bed: '2',
-                    shower: '啦啦啦啦啦舒畅',
-                    computerNum:'1',
-                    people_count:'2'
-                },
-                {
-                    key: '3',
-                    roomNum: 201,
-                    computer: '高配电脑',
-                    imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-                    isCheckIn: false,
-                    bed: '2',
-                    shower: '啦啦啦啦啦舒畅',
-                    computerNum:'1',
-                    people_count:'2'
+        reqRoomByTypeId(props.match.params.houseId).then((res: any) => {
+            // console.log(res.data.rooms);
 
-                },
-                {
-                    key: '4',
-                    roomNum: 102,
-                    computer: '高配电脑',
-                    imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-                    isCheckIn: true,
-                    bed: '2',
-                    shower: '啦啦啦啦啦舒畅',
-                    computerNum:'1',
-                    people_count:'2'
+            if (res.code === 0) {
+                let myArr: any = []
+                res.data.rooms.map((item: any) => {
+                    myArr.push({
+                        key: item.id,
+                        imgs: JSON.parse(item.img_url || "[]"),
+                        roomInfo: JSON.parse(item.room_info),
+                        computer: JSON.parse(item.computer_info),
+                        roomNum: item.room_num,
+                        isCheckIn: item.is_used
+                    })
+                })
+                // console.log(myArr);
+                setData(myArr)
+                setLoading(false)
 
-                },
-            ];
-            setData(data)
-        }, 1000);
+            }
+        })
+        // setTimeout(() => {
+        //     const data = [
+        //         {
+        //             key: '1',
+        //             roomNum: 101,
+        //             computer: '高配电脑',
+        //             imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        //                 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
+        //             isCheckIn: true,
+        //             bed: '2',
+        //             shower: '啦啦啦啦啦舒畅',
+        //             computerNum: '1',
+        //             people_count: '2',
+        //             roomInfo: ''
+        //         },
+        //         {
+        //             key: '2',
+        //             roomNum: 301,
+        //             computer: '高配电脑',
+        //             imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
+        //             isCheckIn: false,
+        //             bed: '2',
+        //             shower: '啦啦啦啦啦舒畅',
+        //             computerNum: '1',
+        //             people_count: '2',
+        //             roomInfo: ''
 
+        //         },
 
-
+        //     ];
+        //     setData(data)
+        //     setLoading(false)
+        // }, 1000);
     }, [])
     const columns = [
         {
@@ -122,53 +123,59 @@ export default function RoomDetail(props: any) {
             key: 'computer',
             width: 230,
             //   电脑配置： cpu   显卡  显示器 主板 内存 键盘 鼠标 耳机 
-            render: (data: string) => {
+            render: (data: any) => {
                 return (
                     <div className="computer">
-                        <span>cpu：{data}</span>
-                        <span>显卡：{data}</span>
-                        <span>显示器：{data}</span>
-                        <span>主板：{data}</span>
-                        <span>内存：{data}</span>
-                        <span>键盘：{data}</span>
-                        <span>鼠标：{data}</span>
-                        <span>耳机：{data}</span>
+                        <span>cpu：{data.cpu || "暂无记录"}</span>
+                        <span>显卡：{data.gpu || "暂无记录"}</span>
+                        <span>显示器：{data.device || "暂无记录"}</span>
+                        <span>主板：{data.mainboard || "暂无记录"}</span>
+                        <span>内存：{data.memory || "暂无记录"}</span>
+                        <span>键盘：{data.keyboard || "暂无记录"}</span>
+                        <span>鼠标：{data.mouse || "暂无记录"}</span>
+                        <span>耳机：{data.earphone || "暂无记录"}</span>
                     </div>
                 )
             }
         },
         {
             title: '电脑数量',
-            dataIndex: 'computerNum',
-            key: 'computerNum',
             width: 110,
-            render: (text: any, item: any, index: any) => (<span>{text}个</span>)
+            render: (e: any) => {
+                // console.log(e);
+                return (
+                    <>{e.roomInfo.computer_count}</>
+                )
+
+            }
         },
         {
             title: '床位',
-            dataIndex: 'bed',
-            key: 'bed',
-            width: 100,
-            render: (bed: string) => {
+            render: (e: any) => {
+                // console.log(e);
                 return (
-                    <span>{bed} 个</span>
+                    <>{e.roomInfo.bed_count}</>
                 )
+
             }
         },
         {
             title: '浴室配置',
-            dataIndex: 'shower',
-            key: 'shower',
+            render: (e: any) => {
+                // console.log(e);
+                return (
+                    <>{e.roomInfo.bathroom}</>
+                )
+
+            }
         },
         {
             title: '可住人数',
-            dataIndex: 'people_count',
             key: 'people_count',
-            render:(text:string) => {
+            render: (e: any) => {
+                // console.log(e);
                 return (
-                    <>
-                        {text} 人                   
-                    </>
+                    <>{e.roomInfo.people_count}</>
                 )
 
             }
@@ -176,8 +183,7 @@ export default function RoomDetail(props: any) {
 
         {
             title: '房间环境',
-            render: (e: any,) => {
-
+            render: (e: any) => {
                 return e.imgs.map((item: any, index: number) => {
                     return (
                         <Image
@@ -196,14 +202,14 @@ export default function RoomDetail(props: any) {
             key: 'isCheckIn',
             width: 150,
             render: (status: Boolean) => <div style={{ textAlign: "center" }}>
-                <span className={status ? 'isCheckIn notCheck' : 'isCheckIn'} >{status ? '未入住' : '已入住'}</span>
+                <span className={!status ? 'isCheckIn notCheck' : 'isCheckIn'} >{!status ? '未入住' : '已入住'}</span>
             </div>
         },
         {
             title: '房间详情',
             key: 'action',
             width: 100,
-            render: (text: string, record: any) => {
+            render: (record: any) => {
                 return (
                     <>
                         <a onClick={() => { props.history.push({ pathname: '/room/addOrUpdateRoom', query: { addHouseId: record.key } }) }}>点击修改</a>
@@ -222,7 +228,7 @@ export default function RoomDetail(props: any) {
                     bordered
                     loading={loading}
                     pagination={{
-                        defaultPageSize: 7,
+                        defaultPageSize: PAGE_SIZE,
                         total: 4,
                         showQuickJumper: true,
                         onChange: (e) => { console.log(e); },
