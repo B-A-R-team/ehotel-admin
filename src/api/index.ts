@@ -1,4 +1,3 @@
-import { idText } from 'typescript'
 import myAxios from './myAxios'
 // const BASE_URL:string = 'https://www.barteam.cn:1239'
 myAxios.defaults.baseURL = 'https://www.barteam.cn:1239'
@@ -75,6 +74,31 @@ export const reqUpdateRoom: any = ({
     computer_info,
     typeId,
     hotelId
-}) 
+})
 //  获取所有优惠券
-export const reqAllCoupon:any = () => myAxios('/coupon/list')
+export const reqAllCoupon: any = () => myAxios('/coupon/list')
+
+//添加优惠券
+export const reqAddCoupon: any = ({ label,
+    is_full_down,
+    limit_price,
+    reduce_price,
+    start_time,
+    end_time,
+    remarks,
+    hotel_id,
+    user_id,
+    is_used }: any) => myAxios.post('/coupon/create', {
+        label,
+        is_full_down,
+        limit_price,
+        reduce_price,
+        start_time,
+        end_time,
+        remarks,
+        hotel_id,
+        user_id,
+        is_used
+    })
+//删除优惠券
+export const reqDelCoupon = (id:any) => myAxios.delete('/coupon/delete/'+ id)

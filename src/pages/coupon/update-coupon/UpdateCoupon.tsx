@@ -10,20 +10,19 @@ import {
 } from 'antd'
 
 import { DrawerContext } from '../index'
+import moment from 'moment';
 
 const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 };
-
+const dateFormat = 'YYYY-MM-DD HH:mm:ss'
 export default function UpdateCoupon(props: any) {
 
     const [couponInfo, setCouponInfo] = useState(props.couponInfo)
-    const [couponType, setCouponType] = useState('FullCutCoupon')
 
     useEffect(() => {
         setCouponInfo(props.couponInfo)
-        setCouponType(props.couponInfo.couponType)
     }, [props.couponInfo])
 
     const { visible, setVisible } = useContext(DrawerContext)
@@ -31,10 +30,6 @@ export default function UpdateCoupon(props: any) {
         setVisible(false)
     };
 
-    const couponTypeChange = (value: any) => {
-        setCouponType(value)
-        setCouponInfo({ ...couponInfo, couponType: value })
-    }
     const handleClick = () => {
         //发请求
         setVisible(false)
@@ -66,20 +61,24 @@ export default function UpdateCoupon(props: any) {
                 <Form.Item
                     label="优惠券名称"
                 >
-                    <Input value={couponInfo.couponName} onChange={(e) => setCouponInfo({ ...couponInfo, couponName: e.target.value })} />
+                    <Input value={couponInfo.label} onChange={(e) => setCouponInfo({ ...couponInfo, label: e.target.value })} />
                 </Form.Item>
                 <Form.Item
                     label="优惠券类型"
                 >
-                    <Select value={couponInfo.couponType}
-                        style={{ width: 120 }} onChange={couponTypeChange}>
-                        <Select.Option value="discountCoupon">代金券</Select.Option>
+                    <Select value={couponInfo.is_full_down?'fullCoupon':'voucher '}
+                        style={{ width: 120 }} onChange={(e) => {
+                            console.log(  e === 'fullCoupon');
+                            const couponName = e === 'fullCoupon'?true:false
+                           return  setCouponInfo({ ...couponInfo, is_full_down: couponName })
+                        }}>
+                        <Select.Option value="voucher ">代金券</Select.Option>
                         <Select.Option value="fullCoupon">满减券</Select.Option>
                     </Select>
 
                 </Form.Item>
                 {
-                    couponType === 'fullCoupon' ?
+                    couponInfo.is_full_down ?
                         (
                             <>
                                 <Form.Item label="满减券" >
@@ -88,8 +87,8 @@ export default function UpdateCoupon(props: any) {
                                         noStyle
                                     >
                                         <InputNumber
-                                            value={couponInfo.fullCoupon}
-                                            onChange={(e: number | string | any) => setCouponInfo({ ...couponInfo, fullCoupon: e })}
+                                            value={couponInfo.limit_price}
+                                            onChange={(e: number | string | any) => setCouponInfo({ ...couponInfo, limit_price: e })}
                                         />
                                     </Form.Item>
                                 </Form.Item>
@@ -99,8 +98,8 @@ export default function UpdateCoupon(props: any) {
                                         noStyle
                                     >
                                         <InputNumber
-                                            value={couponInfo.subCoupon}
-                                            onChange={(e) => { setCouponInfo({ ...couponInfo, subCoupon: e }) }}
+                                            value={couponInfo.reduce_price}
+                                            onChange={(e) => { setCouponInfo({ ...couponInfo, reduce_price: e }) }}
                                         />
                                     </Form.Item>
                                 </Form.Item>
@@ -112,24 +111,33 @@ export default function UpdateCoupon(props: any) {
                                 rules={[{ type: 'number', min: 0, max: 10000 }]}
                             >
                                 <InputNumber
-                                    value={couponInfo.discountCoupon}
+                                    value={couponInfo.reduce_price}
                                     min={0}
                                     max={10000}
                                     step={1}
                                     formatter={value => `${value}元`}
                                     parser={(value: any) => value.replace('元', '')}
-                                    onChange={(e) => { setCouponInfo({ ...couponInfo, discountCoupon: e }) }}
+                                    onChange={(e) => { setCouponInfo({ ...couponInfo, reduce_price: e }) }}
                                 />
                             </Form.Item>
                         )
                 }
+                {console.log(new Date(1603296003000).toLocaleDateString())}
+                {/* {console.log(moment('1603296003000',dateFormat))} */}
                 <Form.Item label="日期" rules={[{ required: true }]} >
-                    <DatePicker.RangePicker showTime />
+                    <DatePicker.RangePicker showTime
+                     defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+                     format={dateFormat}
+                     onChange={(e)=> {
+                         console.log(e);
+
+                     }}
+                    />
                 </Form.Item>
                 <>
                     <Form.Item label="优惠券的描述"  >
-                        <Input.TextArea placeholder="请输入对优惠券的描述" value={couponInfo.introduction}
-                            onChange={(e) => { setCouponInfo({ ...couponInfo, introduction: e.target.value }) }} />
+                        <Input.TextArea placeholder="请输入对优惠券的描述" value={couponInfo.remarks}
+                            onChange={(e) => { setCouponInfo({ ...couponInfo, remarks: e.target.value }) }} />
                     </Form.Item>
                 </>
             </Form>
