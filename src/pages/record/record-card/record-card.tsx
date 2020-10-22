@@ -11,7 +11,7 @@ export interface IRecordCardProps<T> {
   info: T | null;
   onClose: () => void;
   modifyItem: (arg0: any, arg1: string) => void;
-  startLoading: () => void;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   children?: ReactNode;
 }
 
@@ -20,7 +20,7 @@ export interface IRecordCardProps<T> {
  */
 const keyForLabel: { [index: string]: string } = {
   id: '订单编号',
-  time: '下单时间',
+  create_at: '下单时间',
   room: '房间名称',
   name: '入住人名称',
   phone: '入住人电话',
@@ -76,7 +76,7 @@ function generateCardForm<T>(
   const isDisabled = (
     able: boolean,
     index: string,
-    disableList: string[] = ['id', 'time']
+    disableList: string[] = ['id', 'create_at']
   ): boolean => {
     if (disableList.some((item) => item === index) && able) {
       return true;
@@ -122,14 +122,14 @@ const RecordCard: FC<IRecordCardProps<IRecord>> = ({
   info,
   onClose,
   modifyItem,
-  startLoading,
+  setLoading,
 }: IRecordCardProps<IRecord>) => {
   const [able, setAble] = useState(false);
-console.log('lalalalalalalala');
+  console.log('lalalalalalalala');
   const save = (info: IRecord | null) => {
     setAble(false);
     onClose();
-    startLoading();
+    setLoading(true);
     console.log(info);
   };
 

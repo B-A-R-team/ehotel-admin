@@ -1,26 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './carousels.less';
 import { Carousel, Image, Spin, Card, Upload, message } from 'antd';
-import useRequest from '../../hooks/useRequest';
 import ImageCard from './image-card/image-card';
 import { InboxOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
+import { UploadChangeParam } from 'antd/lib/upload';
+import { reqAddSwiper, reqSwiperList } from '../../api';
+import { reqUpdateSwiper } from '../../api/index';
 
 const { Dragger } = Upload;
 
 const props = {
   name: 'file',
-  action:
-    'https://www.barteam.cn:1239/hotels/upload/swiper?id=5f15898e9e625204e0c20b29',
+  action: 'https://www.barteam.cn:1239/upload',
   headers: {
     Authorization: localStorage.getItem('token') as string,
   },
-  onChange(info: any) {
+  async onChange(info: UploadChangeParam) {
     const { status } = info.file;
 
     if (status === 'done') {
+      // console.log(info.file.response.data.path);
       message.success(`${info.file.name} file uploaded successfully.`);
+      await reqAddSwiper(info.file.response.data.path);
       window.location.reload();
     } else if (status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
@@ -29,52 +32,32 @@ const props = {
 };
 
 const Carousels = () => {
-  // 获取轮播图
-  const [{ data, loading, error }] = useRequest<{ code: number; data: [] }>({
-    url:
-      'https://www.barteam.cn:1239/hotels/swiper?id=5f15898e9e625204e0c20b29',
-    method: 'get',
-  });
-
-  // 删除
-  const [{ data: updateData, request }] = useRequest<{
-    code: number;
-    data: any;
-  }>(
-    {
-      url: 'https://www.barteam.cn:1239/hotels/swiper/update',
-      method: 'put',
-      headers: {
-        Authorization: localStorage.getItem('token') as string,
-      },
-      data: {
-        id: '5f15898e9e625204e0c20b29',
-        swiperUrlList: [],
-      },
-    },
-    false
-  );
+  const [swiperList, setSwiperList] = useState<any>();
+  const [loading, setLoading] = useState(true);
 
   /**
    * 删除图片
    * @param imgUrl 要删除的图片url
    */
-  const onDelete = (imgUrl: string) => {
-    const list = data['data'];
-    const res = list.filter((item) => item !== imgUrl);
-    request({
-      url: 'https://www.barteam.cn:1239/hotels/swiper/update',
-      method: 'put',
-      headers: {
-        Authorization: localStorage.getItem('token') as string,
-      },
-      data: {
-        id: '5f15898e9e625204e0c20b29',
-        swiperUrlList: res,
-      },
-    });
+  const onDelete = async (imgUrl: string) => {
+    setLoading(true);
+    const newList = swiperList.filter((item: string) => item !== imgUrl);
+    await reqUpdateSwiper(newList);
+
+    setLoading(false);
     window.location.reload();
   };
+
+  const getSwiper = async () => {
+    const res = await reqSwiperList();
+
+    setSwiperList(res['data']);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getSwiper();
+  }, []);
 
   return (
     <Spin spinning={loading}>
@@ -82,8 +65,8 @@ const Carousels = () => {
         <div className="carousel-cards">
           <Card className="show">
             <Carousel autoplay className="carousels">
-              {data['data'] ? (
-                data['data'].map((item) => (
+              {swiperList ? (
+                swiperList.map((item: string) => (
                   <Image
                     className="carousel-image"
                     src={`https://www.barteam.cn:1239/${item}`}
@@ -111,8 +94,8 @@ const Carousels = () => {
         </div>
         <Card className="show-list" title="图片列表">
           <div className="image-wrapper">
-            {data['data'] ? (
-              data['data'].map((item) => (
+            {swiperList ? (
+              swiperList.map((item: string) => (
                 <ImageCard
                   src={`https://www.barteam.cn:1239/${item}`}
                   key={item}

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Table, Button, Spin } from 'antd';
 
 import './record.less';
@@ -10,10 +10,11 @@ import useSelectedRows from '../../hooks/useSelectedRows';
 import useInfoWrapper from '../../hooks/useInfoWrapper';
 import useRequest from '../../hooks/useRequest';
 import getQuery from '../../utils/getQuery';
+import { reqAllRecords } from '../../api/index';
 
 export interface IRecord {
-  key: string;
-  time: string | Date;
+  id: string | number;
+  create_at: string | Date;
   room: string;
   name: string;
   phone: string;
@@ -22,164 +23,34 @@ export interface IRecord {
   status: string;
 }
 
-const data = [
-  {
-    key: '2638ac4b9a894f514fd1',
-    id: '2638ac4b9a894f514fd1',
-    time: '2020/08/23 20:39:38',
-    room: '大床房',
-    name: '小王',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f42638ac4b9a4894f5fd2',
-    id: '5f42638ac4b9a4894f5fd2',
-    time: '2020/08/23 20:39:38',
-    room: '标准房',
-    name: '忽必烈',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f42638ac4b9a48f514fd3',
-    id: '5f42638ac4b9a48f514fd3',
-    time: '2020/08/23 20:39:38',
-    room: '大床房',
-    name: '孙悟空',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f42638ac4a4894f514fd4',
-    id: '5f42638ac4a4894f514fd4',
-    time: '2020/08/23 20:39:38',
-    room: '三人房',
-    name: '雷神',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f42638ac4aa894f514fd5',
-    id: '5f42638ac4aa894f514fd5',
-    time: '2020/08/23 20:39:38',
-    room: '总统房',
-    name: '李世明',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '42638ac4b9aa4894f51fd6',
-    id: '42638ac4b9aa4894f51fd6',
-    time: '2020/08/23 20:39:38',
-    room: '观景房',
-    name: '陆游',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f42638acb9aa4894f5f7d',
-    id: '5f42638acb9aa4894f5f7d',
-    time: '2020/08/23 20:39:38',
-    room: '标准房',
-    name: '刘邦',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f4638ac4b94894f514f8d',
-    id: '5f4638ac4b94894f514f8d',
-    time: '2020/08/23 20:39:38',
-    room: '古楼主题房',
-    name: '李煜',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f2638c4b9aa489f514f9d',
-    id: '5f2638c4b9aa489f514f9d',
-    time: '2020/08/23 20:39:38',
-    room: '古典套房',
-    name: '汉高祖',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f42638ac4b9aa494f540fd',
-    id: '5f42638ac4b9aa494f540fd',
-    time: '2020/08/23 20:39:38',
-    room: '家庭房',
-    name: '乔布斯',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f2638ac4b9aa894f5141f',
-    id: '5f2638ac4b9aa894f5141f',
-    time: '2020/08/23 20:39:38',
-    room: '未来主题房',
-    name: '机器人',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-  {
-    key: '5f2638a4b9aa1494f514fd',
-    id: '5f2638a4b9aa1494f514fd',
-    time: '2020/08/23 20:39:38',
-    room: '大床房',
-    name: '李小狼',
-    phone: '15915915915',
-    coupon: 0,
-    price: 100,
-    status: '待入住',
-  },
-];
+export enum RecordStatus {
+  waiting = '待入住',
+  finish = '已完成',
+  unpaid = '待付款',
+}
+
+const data: IRecord[] = [];
 
 const Record: FC = () => {
   const [tableData, setTableData] = useState(data);
-  const [selectedKeys, selectedRows, getSelectRows] = useSelectedRows([]);
   const { show, open, close, wrapperInfo, modifyInfoItem } = useInfoWrapper<
     IRecord
   >({
     visible: false,
     info: null,
   });
-  const [loading, startLoading] = useRequest();
+  const [loading, setLoading] = useState(true);
 
   const query = getQuery('s', /^[0-9a-z]{20}$/);
 
   const columns = [
     {
       title: '订单编号',
-      dataIndex: 'key',
-      ellipsis: true,
+      dataIndex: 'id',
     },
     {
       title: '房间',
       dataIndex: 'room',
-      render: (text: string) => <a>{text}</a>,
     },
     {
       title: '入住人',
@@ -195,7 +66,7 @@ const Record: FC = () => {
     },
     {
       title: '下单时间',
-      dataIndex: 'time',
+      dataIndex: 'create_at',
       ellipsis: true,
     },
     {
@@ -212,21 +83,26 @@ const Record: FC = () => {
     },
   ];
 
+  const loadRecords = async () => {
+    const records = await reqAllRecords();
+    setLoading(false);
+    setTableData(records);
+  };
+
+  useEffect(() => {
+    loadRecords();
+  }, []);
+
   return (
     <div className="record">
       <RecordSearch
-        selectedKeys={selectedKeys}
         changeTable={setTableData}
         tableData={tableData}
-        startLoading={startLoading}
+        setLoading={setLoading}
         searchData={{ id: query, phone: '', state: '' }}
       />
       <Spin spinning={loading}>
         <Table
-          rowSelection={{
-            type: 'checkbox',
-            onChange: getSelectRows,
-          }}
           columns={columns}
           dataSource={tableData}
           pagination={{ pageSize: 7 }}
@@ -236,7 +112,7 @@ const Record: FC = () => {
         visible={show}
         info={wrapperInfo}
         modifyItem={modifyInfoItem}
-        startLoading={startLoading}
+        setLoading={setLoading}
         onClose={() => close()}
       />
     </div>
