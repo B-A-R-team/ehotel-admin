@@ -7,10 +7,12 @@ import {
     Select,
     DatePicker,
     InputNumber,
+    message,
 } from 'antd'
 
 import { DrawerContext } from '../index'
 import moment from 'moment';
+import { reqUpdateCoupon } from '../../../api';
 
 const layout = {
     labelCol: { span: 6 },
@@ -20,11 +22,15 @@ const dateFormat = 'YYYY-MM-DD HH:mm:ss'
 export default function UpdateCoupon(props: any) {
 
     const [couponInfo, setCouponInfo] = useState(props.couponInfo)
-
+    // 日期状态
+    const [date, setDate] = useState<any>([])
     useEffect(() => {
         setCouponInfo(props.couponInfo)
-    }, [props.couponInfo])
-
+        setDate([moment(moment(parseInt(couponInfo.start_time)).format(dateFormat), dateFormat),
+        moment(moment(parseInt(couponInfo.end_time)).format(dateFormat), dateFormat)
+        ])
+    }, [couponInfo.end_time, couponInfo.start_time, props.couponInfo])
+    //控制抽屉的显示
     const { visible, setVisible } = useContext(DrawerContext)
     const onClose = () => {
         setVisible(false)
@@ -32,8 +38,19 @@ export default function UpdateCoupon(props: any) {
 
     const handleClick = () => {
         //发请求
-        setVisible(false)
         console.log(couponInfo)
+        const start_time = new Date( date[0].format()).getTime()
+        const end_time = new Date( date[1].format()).getTime()
+        let obj = {...couponInfo,start_time,end_time}
+        reqUpdateCoupon(obj).then((res:any) => {
+            console.log(res);
+            if(res.code === 0) {
+                message.success('修改成功')
+                setVisible(false)
+            }
+        })
+
+
     }
     return (
         <Drawer
@@ -49,9 +66,9 @@ export default function UpdateCoupon(props: any) {
                 <div>
                     <Button ghost type="primary" onClick={onClose}>
                         取消 </Button>
-                    <Button style={{marginLeft:"20px"}} type="primary" onClick={handleClick}>
+                    <Button style={{ marginLeft: "20px" }} type="primary" onClick={handleClick}>
                         提交 </Button>
-                    <span style={{marginLeft:"20px", color:"gray" }}>如果不提交，则不会保存任何修改</span>
+                    <span style={{ marginLeft: "20px", color: "gray" }}>如果不提交，则不会保存任何修改</span>
                 </div>
             }
         >
@@ -66,11 +83,11 @@ export default function UpdateCoupon(props: any) {
                 <Form.Item
                     label="优惠券类型"
                 >
-                    <Select value={couponInfo.is_full_down?'fullCoupon':'voucher '}
+                    <Select value={couponInfo.is_full_down ? 'fullCoupon' : 'voucher '}
                         style={{ width: 120 }} onChange={(e) => {
-                            console.log(  e === 'fullCoupon');
-                            const couponName = e === 'fullCoupon'?true:false
-                           return  setCouponInfo({ ...couponInfo, is_full_down: couponName })
+                            console.log(e === 'fullCoupon');
+                            const couponName = e === 'fullCoupon' ? true : false
+                            return setCouponInfo({ ...couponInfo, is_full_down: couponName })
                         }}>
                         <Select.Option value="voucher ">代金券</Select.Option>
                         <Select.Option value="fullCoupon">满减券</Select.Option>
@@ -122,16 +139,14 @@ export default function UpdateCoupon(props: any) {
                             </Form.Item>
                         )
                 }
-                {console.log(new Date(1603296003000).toLocaleDateString())}
-                {/* {console.log(moment('1603296003000',dateFormat))} */}
                 <Form.Item label="日期" rules={[{ required: true }]} >
                     <DatePicker.RangePicker showTime
-                     defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-                     format={dateFormat}
-                     onChange={(e)=> {
-                         console.log(e);
-
-                     }}
+                        value={date}
+                        format={dateFormat}
+                        onChange={(e) => {
+                            console.log(e);
+                           return setDate(e)
+                        }}
                     />
                 </Form.Item>
                 <>

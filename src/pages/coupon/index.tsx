@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, createContext } from 'react';
-import useRequest from '../../hooks/useRequest'
 import { Card, Modal, Divider, Spin, message } from 'antd'
 
 import UpdateCoupon from './update-coupon/UpdateCoupon'
 import './coupon.less'
 import { reqAllCoupon, reqDelCoupon } from '../../api';
-
 export let DrawerContext: any = createContext(false)
 
 export default function Coupon() {
@@ -30,11 +28,12 @@ export default function Coupon() {
             [{ ...couponsOut }]
         ]
     )
-    const [loading,setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     //传入抽屉的数据
     const [updateCouponInfo, setUpdateCouponInfo] = useState({ ...couponsOut })
     const showDrawer = (item: any, index: number) => {
         setVisible(true)
+        console.log(item);
         setUpdateCouponInfo(item)
     };
     useEffect(() => {
@@ -57,16 +56,11 @@ export default function Coupon() {
                         notStartArr.push(item)
                     }
                 })
-                // console.log(notStartArr, startArr,endArr);
-                // eslint-disable-next-line react-hooks/rules-of-hooks
                 setCouponArr([startArr, notStartArr, endArr])
                 setLoading(false)
             }
         })
-
-
-    }, [])
-
+    }, [visible])
     const title = (
         <span>
             <span style={{ fontSize: 14 }}>
@@ -99,8 +93,8 @@ export default function Coupon() {
                 reqDelCoupon(id).then((res: any) => {
                     console.log(res);
                     if (res.code === 0 && res.data.affected === 1) {
-                        message.success('删除成功')
                         couponArr[titleIndex].splice(index, 1)
+                        message.success('删除成功')
                     }
                 })
             },

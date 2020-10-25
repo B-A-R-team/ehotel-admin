@@ -39,14 +39,14 @@ export function AddCoupon() {
             </span>
         </span>
     )
+    
     const onFinish = (values: any) => {
         const { coupon } = values
         const momentArr = coupon.date;
-        let startTime = new Date(moment(momentArr[0]).format('YYYY-MM-DD HH:mm:ss')).getTime();
-        let endTime = new Date(moment(momentArr[1]).format('YYYY-MM-DD HH:mm:ss')).getTime();
+        console.log(momentArr[0]);
+        let startTime = new Date(momentArr[0].format('YYYY-MM-DD HH:mm:ss')).getTime();
+        let endTime = new Date(momentArr[1].format('YYYY-MM-DD HH:mm:ss')).getTime();
         coupon.startTime = startTime;
-        let time = new Date(startTime).getTime()
-        console.log(time);
         coupon.endTime = endTime;
         delete values.coupon.date;
         //发请求 
@@ -63,7 +63,7 @@ export function AddCoupon() {
             user_id: parseInt(userInfo.id),
             hotel_id: parseInt(userInfo.id)
         }
-        console.log(myCounpon);
+        // console.log(myCounpon);
         reqAddCoupon(myCounpon).then((res: any) => {
             console.log(res);
             if(res.code === 0) {
