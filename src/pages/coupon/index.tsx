@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, createContext } from 'react';
-import useRequest from '../../hooks/useRequest'
-import { Card, Modal, Divider, Spin } from 'antd'
+import { Card, Modal, Divider, Spin, message } from 'antd'
 
 import UpdateCoupon from './update-coupon/UpdateCoupon'
 import './coupon.less'
-
+import { reqAllCoupon, reqDelCoupon } from '../../api';
 export let DrawerContext: any = createContext(false)
 
 export default function Coupon() {
     const couponsOut = {
-        couponName: '',
-        couponType: '',
-        fullCoupon: 0,
-        subCoupon: 0,
-        startTime: '',
-        endTime: '',
-        introduction: '',
-        discountCoupon: 0
+        id: '1',
+        is_full_down: true,
+        start_time: '', //开始时间
+        end_time: '', //结束时间
+        remarks: '', //备注
+        limit_price: '',
+        reduce_price: '',
+        label: '',
+        is_used: false
     }
     const [isNotEmpty, setIsNotEmpty] = useState(true);
     const [visible, setVisible] = useState(false)
@@ -28,89 +28,39 @@ export default function Coupon() {
             [{ ...couponsOut }]
         ]
     )
-    const [loading] = useRequest();
+    const [loading, setLoading] = useState(true);
+    //传入抽屉的数据
     const [updateCouponInfo, setUpdateCouponInfo] = useState({ ...couponsOut })
     const showDrawer = (item: any, index: number) => {
-        // console.log(item);
         setVisible(true)
+        console.log(item);
         setUpdateCouponInfo(item)
     };
     useEffect(() => {
-        const couponInfos = [
-            {
-                couponName: 'daquan',
-                couponType: 'fullCoupon',
-                fullCoupon: 50,
-                subCoupon: 10,
-                startTime: '2020-08-20 16:00:00',
-                endTime: '2020-08-22 16:00:00',
-                introduction: '123456',
-                discountCoupon: 90
-            },
-            {
-                couponName: 'xiaoquan',
-                couponType: 'fullCoupon',
-                fullCoupon: 100,
-                subCoupon: 20,
-                startTime: '2020-08-20 16:00:00',
-                endTime: '2020-09-30 16:00:00',
-                introduction: 'mmm',
-                discountCoupon: 90
-            },
-            {
-                couponName: 'mmmm',
-                couponType: 'discountCoupon',
-                fullCoupon: 50,
-                subCoupon: 10,
-                startTime: '2020-08-20 16:00:00',
-                endTime: '2020-11-29 16:00:00',
-                introduction: 'mmm',
-                discountCoupon: 90
-            },
-            {
-                couponName: 'xxxx',
-                couponType: 'discountCoupon',
-                fullCoupon: 50,
-                subCoupon: 10,
-                startTime: '2020-11-20 16:00:00',
-                endTime: '2020-11-29 16:00:00',
-                introduction: 'mmm',
-                discountCoupon: 90
-            },
-            {
-                couponName: 'hhhh',
-                couponType: 'fullCoupon',
-                fullCoupon: 50,
-                subCoupon: 10,
-                startTime: '2020-11-20 16:00:00',
-                endTime: '2020-11-29 16:00:00',
-                introduction: 'mmm',
-                discountCoupon: 90
-            },
-
-        ]
-
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const nowDate = new Date().getTime();
-        let notStartArr: any[] = []
-        let startArr: any[] = []
-        let endArr: any[] = []
-        couponInfos.forEach((item, index) => {
-            let startTime = new Date(item.startTime).getTime()
-            let endTime = new Date(item.endTime).getTime()
-            if (endTime < nowDate) {
-                endArr.push(item)
-            } else if (startTime <= nowDate && nowDate < endTime) {
-                startArr.push(item)
-            } else if (startTime > nowDate && endTime > nowDate) {
-                notStartArr.push(item)
+        reqAllCoupon().then((res: any) => {
+            if (res.code === 0) {
+                const nowDate = new Date().getTime();
+                // console.log(nowDate);
+                let notStartArr: any[] = []
+                let startArr: any[] = []
+                let endArr: any[] = []
+                res.data.forEach((item: any, index: number) => {
+                    // let start_time = new Date(item.start_time).getTime()
+                    const { start_time, end_time } = item
+                    // let end_time = new Date(item.end_time).getTime()
+                    if (end_time < nowDate) {
+                        endArr.push(item)
+                    } else if (start_time <= nowDate && nowDate < end_time) {
+                        startArr.push(item)
+                    } else if (start_time > nowDate && end_time > nowDate) {
+                        notStartArr.push(item)
+                    }
+                })
+                setCouponArr([startArr, notStartArr, endArr])
+                setLoading(false)
             }
         })
-        setTimeout(() => {
-            setCouponArr([startArr, notStartArr, endArr])
-        }, 1000);
-    }, [])
-
+    }, [visible])
     const title = (
         <span>
             <span style={{ fontSize: 14 }}>
@@ -128,8 +78,9 @@ export default function Coupon() {
     ]
     const [modal, contextHolder] = Modal.useModal();
 
-    const deleteCoupon = (titleIndex: number, index: number) => {
+    const deleteCoupon = (titleIndex: number, index: number, id: string) => {
         // setVisible(true)
+        console.log(id);
         modal.confirm({
             title: '删除该优惠券!',
             content: (
@@ -139,7 +90,13 @@ export default function Coupon() {
             ),
             onCancel: () => { },
             onOk: () => {
-                couponArr[titleIndex].splice(index, 1)
+                reqDelCoupon(id).then((res: any) => {
+                    console.log(res);
+                    if (res.code === 0 && res.data.affected === 1) {
+                        couponArr[titleIndex].splice(index, 1)
+                        message.success('删除成功')
+                    }
+                })
             },
             okText: '确定',
             cancelText: '取消'
@@ -164,18 +121,17 @@ export default function Coupon() {
                                                     return (
 
                                                         <div className={cardItem.styles} key={index}>
-                                                            <span className="coupon-name">{item.couponType === 'fullCoupon' ? '满减券' : '代金券'}</span>
-                                                            <span className="coupon-delete" onClick={() => deleteCoupon(titleIndex, index)} >x</span>
+                                                            <span className="coupon-name">{item.is_full_down ? '满减券' : '代金券'}</span>
+                                                            <span className="coupon-delete" onClick={() => deleteCoupon(titleIndex, index, item.id)} >x</span>
                                                             <Divider />
-                                                            {item.couponType === 'fullCoupon' ? (
-                                                                <span className="discount" >满{item.fullCoupon}&nbsp;减{item.subCoupon}</span>
+                                                            {item.is_full_down ? (
+                                                                <span className="discount" >满{item.limit_price}&nbsp;减{item.reduce_price}</span>
                                                             ) :
-                                                                (<span className="discount" >{item.discountCoupon}元</span>)
+                                                                (<span className="discount" >{item.reduce_price}元</span>)
                                                             }
 
                                                             <span className="update-btn" onClick={() => showDrawer(item, index)}>修改</span>
                                                         </div>
-
                                                     )
                                                 })
                                             }

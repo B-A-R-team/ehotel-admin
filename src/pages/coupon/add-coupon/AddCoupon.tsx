@@ -8,11 +8,13 @@ import {
     Select,
     DatePicker,
     InputNumber,
-    Card
+    Card,
+    message
 } from 'antd';
-
+import { reqAddCoupon } from '../../../api'
+import storageUtils from '../../../utils/storageUtils';
 const layout = {
-    labelCol: { span: 2 },
+    labelCol: { span: 4 },
     wrapperCol: { span: 4 },
 };
 
@@ -37,20 +39,42 @@ export function AddCoupon() {
             </span>
         </span>
     )
+    
     const onFinish = (values: any) => {
         const { coupon } = values
         const momentArr = coupon.date;
-        let startTime = moment(momentArr[0]).format('YYYY-MM-DD HH:mm:ss');
-        let endTime = moment(momentArr[1]).format('YYYY-MM-DD HH:mm:ss');
+        console.log(momentArr[0]);
+        let startTime = new Date(momentArr[0].format('YYYY-MM-DD HH:mm:ss')).getTime();
+        let endTime = new Date(momentArr[1].format('YYYY-MM-DD HH:mm:ss')).getTime();
         coupon.startTime = startTime;
         coupon.endTime = endTime;
         delete values.coupon.date;
         //发请求 
-        console.log(coupon);
+        const userInfo = storageUtils.getUser()
+        let myCounpon = {
+            is_full_down: couponType, //true: 满减券, false：代金券
+            start_time: coupon.startTime, //开始时间
+            end_time: coupon.endTime, //结束时间
+            remarks: coupon.introduction, //备注
+            limit_price: coupon.fullCoupon || 100,
+            reduce_price: coupon.subCoupon,
+            label: coupon.couponName,
+            is_used: false,
+            user_id: parseInt(userInfo.id),
+            hotel_id: parseInt(userInfo.id)
+        }
+        // console.log(myCounpon);
+        reqAddCoupon(myCounpon).then((res: any) => {
+            console.log(res);
+            if(res.code === 0) {
+                message.success('添加成功')
+            }
+        })
+
     };
-    const [couponType, setCouponType] = useState('FullCutCoupon');
+    const [couponType, setCouponType] = useState(true);
     const couponTypeChange = (value: any) => {
-        setCouponType(value)
+        setCouponType(!couponType)
     }
 
     return (
@@ -71,7 +95,7 @@ export function AddCoupon() {
                 </Form.Item>
                 <Form.Item initialValue="FullCutCoupon" name={['coupon', 'couponType']} label="优惠券类型" >
 
-                    <Select defaultValue="FullCutCoupon" style={{ width: 120 }} onChange={couponTypeChange}>
+                    <Select style={{ width: 120 }} onChange={couponTypeChange}>
                         <Select.Option value="discountCoupon">代金券</Select.Option>
                         <Select.Option value="FullCutCoupon">满减券</Select.Option>
                     </Select>
@@ -79,7 +103,7 @@ export function AddCoupon() {
                 </Form.Item>
 
                 {
-                    couponType === 'FullCutCoupon' ?
+                    couponType ?
                         (
                             <>
                                 <Form.Item label="满减券">
@@ -103,7 +127,7 @@ export function AddCoupon() {
                                     >
                                         <InputNumber
                                             min={1}
-                                          
+
                                             onChange={(e) => { console.log(e); }}
                                         />
                                     </Form.Item>
@@ -113,13 +137,13 @@ export function AddCoupon() {
 
                         (
                             <Form.Item
-                                name={['coupon', 'discountCoupon']}
+                                name={['coupon', 'subCoupon']}
                                 label="代金券"
                                 initialValue={10}
                                 rules={[{ type: 'number', min: 0, max: 10000 }]}
                             >
                                 <InputNumber
-                                   
+
                                     min={0}
                                     max={10000}
                                     step={1}
@@ -145,8 +169,8 @@ export function AddCoupon() {
                     </Button>
                 </Form.Item>
             </Form>
-            
+
         </Card>
-        
+
     )
 }
