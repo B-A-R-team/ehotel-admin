@@ -72,6 +72,7 @@ function generateCardForm<T>(
       });
     }
   }
+
   /**
    * 判断是否允许修改
    * @param able 全局是否允许修改
@@ -201,7 +202,7 @@ const RecordCard: FC<IRecordCardProps<IRecord>> = ({
         </div>
       }
     >
-      {generateCardForm(info, able, modifyItem)}
+      {visible && generateCardForm(info, able, modifyItem)}
     </Drawer>
   );
 };
