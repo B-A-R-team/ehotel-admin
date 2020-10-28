@@ -1,14 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  PageHeader,
-  Form,
-  Input,
-  DatePicker,
-  Button,
-  Spin,
-  Modal,
-} from 'antd';
+import { PageHeader, Form, Input, DatePicker, Button, Spin, Modal } from 'antd';
 import { useHistory } from 'react-router-dom';
 import BraftEditor, { ControlType } from 'braft-editor';
 import 'braft-editor/dist/index.css';
@@ -16,9 +8,27 @@ import { FormInstance } from 'antd/lib/form';
 import UploadImgs from '../../room/upload-imgs/uploadImg';
 import useRequest from '../../../hooks/useRequest';
 import './add-update-active.less';
+import {
+  reqCreateActive,
+  reqAcitveById,
+  reqUpdateActive,
+} from '../../../api/index';
+import { activeStatus } from '../active';
+import moment from 'moment';
 
 const { Item } = Form;
 const { RangePicker } = DatePicker;
+
+export interface CreateAndUpdateActiveDto {
+  id?: number;
+  topic: string;
+  img_url?: string;
+  start_time: string;
+  end_time: string;
+  detail: string;
+  desc: string;
+  hotel_id: number;
+}
 
 // 表单项布局
 const layout = {
@@ -40,7 +50,6 @@ const controls = [
   'separator',
   'superscript',
   'subscript',
-  'emoji',
   'separator',
   'headings',
   'list-ul',
@@ -55,9 +64,7 @@ const AddOrUpdateActive = (props: any) => {
   const [uploadLoading, startUploadLoading] = useRequest();
   const [loading, startLoading] = useRequest(false);
   const [editorStr, setEditorStr] = useState<any>();
-  const [isUpdate, setIsUpdate] = useState(false)
-
-
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const [activeData, setActiveData] = useState<any>({
     id: '',
@@ -67,8 +74,8 @@ const AddOrUpdateActive = (props: any) => {
     startTime: '',
     endTime: '',
     status: '',
-    detail:''
-  })
+    detail: '',
+  });
   // 表单的实例
   const formRef = useRef<FormInstance>();
   // 编辑器的实例
@@ -76,31 +83,55 @@ const AddOrUpdateActive = (props: any) => {
 
   // 将HTML字符串转换为编辑器所需要的EditorState实例
 
+  /**
+   * 获取要更新的active数据
+   * @param id active id
+   */
+  const getUpdateActive = async (id: number) => {
+    const { data } = await reqAcitveById(id);
+
+    const start = new Date(data['start_time']).getTime();
+    const end = new Date(data['end_time']).getTime();
+    const now = Date.now();
+    let status: activeStatus;
+    if (start <= now && end >= now) {
+      status = 'in_progress';
+    } else if (start >= now) {
+      status = 'todo';
+    } else {
+      status = 'done';
+    }
+
+    console.log(data['detail']);
+
+    const active = {
+      id: data['id'],
+      title: data['topic'],
+      imgs: [`https://www.barteam.cn:1239/${data['img_url']}`],
+      desc: data['desc'],
+      time: [moment(data['start_time']), moment(data['end_time'])],
+      startTime: new Date(data['start_time']),
+      endTime: new Date(data['end_time']),
+      detail: data['dateil'],
+      status,
+    };
+
+    setActiveData(active);
+    setEditorStr(BraftEditor.createEditorState(data['detail']));
+    formRef.current?.setFieldsValue(active);
+  };
 
   //发请求 判断是否为修改
   useEffect(() => {
     //发请求
     if (props.match.params.id) {
-      setIsUpdate(true)
-      const data = {
-        id: '798',
-        title: '《糖豆人：终极淘汰赛》第二赛季',
-        imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-          'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-        desc:
-          '《糖豆人：终极淘汰赛》Steam平台销量成功突破7,000,000份啦！不仅如此，我们还带来了全新的第二赛季内容大揭秘！炫酷的关卡、神秘的中世纪服装......快戳下面的视频先睹为快吧~',
-        startTime: '2020-11-01',
-        endTime: '2022-11-01',
-        status: 'in_progress',
-        detail:'<p>Hello <b>World!</b></p>'
-      }
-      setActiveData(data)
-      setEditorStr( BraftEditor.createEditorState(data.detail))
-      console.log(editorStr)
-      formRef.current?.setFieldsValue(data)
+      setIsUpdate(true);
+      getUpdateActive(parseInt(props.match.params.id));
+
+      console.log(editorStr);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props]);
   // 上传图片组件的配置
   const uploadConfig = {
     className: 'avatar-uploader',
@@ -124,31 +155,59 @@ const AddOrUpdateActive = (props: any) => {
     };
 
     startLoading();
-    showTips(activeInfo);
+
+    if (props.match.params.id) {
+      console.log(parseInt(props.match.params.id), activeInfo);
+      sendUpdate(parseInt(props.match.params.id), activeInfo);
+    } else {
+      showTips(activeInfo);
+    }
+  };
+
+  const sendUpdate = async (
+    id: number,
+    values: {
+      title: string;
+      time: Date[];
+      img: string[];
+      desc: string;
+      detail: string;
+    }
+  ) => {
+    await reqUpdateActive({
+      id,
+      topic: values['title'],
+      img_url: values['img'][0],
+      start_time: values['time'][0].toLocaleDateString(),
+      end_time: values['time'][1].toLocaleDateString(),
+      detail: values['detail'],
+      desc: values['desc'],
+      hotel_id: 1,
+    });
+
+    history.goBack();
   };
 
   // 提交后的提示信息
-  const showTips = (values: {
+  const showTips = async (values: {
     title: string;
     time: Date[];
     img: string[];
     desc: string;
     detail: string;
   }) => {
+    await reqCreateActive({
+      topic: values['title'],
+      img_url: values['img'][0],
+      start_time: values['time'][0].toLocaleDateString(),
+      end_time: values['time'][1].toLocaleDateString(),
+      detail: values['detail'],
+      desc: values['desc'],
+      hotel_id: 1,
+    });
+
     Modal.info({
       title: '创建成功',
-      content: (
-        <>
-          <p>{values['title']}</p>
-          <p>
-            {values['time'][0].toLocaleDateString()}-
-            {values['time'][1].toLocaleDateString()}
-          </p>
-          <p>imgs: {values['img']} </p>
-          <p>{values['desc']}</p>
-          <p>{values['detail'].toString()}</p>
-        </>
-      ),
     });
   };
 
@@ -160,13 +219,12 @@ const AddOrUpdateActive = (props: any) => {
     formRef.current?.resetFields();
   };
 
-
   return (
     <div className="add-active-page">
       <PageHeader
         className="header"
         onBack={() => history.goBack()}
-        title={isUpdate ? "修改活动详情" : "添加新活动"}
+        title={isUpdate ? '修改活动详情' : '添加新活动'}
       />
       <Spin spinning={loading}>
         <Form
@@ -175,7 +233,7 @@ const AddOrUpdateActive = (props: any) => {
           {...layout}
           labelAlign="right"
           onFinish={finishForm}
-          initialValues={{}}
+          // initialValues={{}}
         >
           <Item
             label="活动标题"
@@ -192,7 +250,10 @@ const AddOrUpdateActive = (props: any) => {
             <RangePicker />
           </Item>
           <Item label="宣传图">
-            <UploadImgs imgs={activeData.imgs} inMode={!!props.match.params.id}/>
+            <UploadImgs
+              imgs={activeData.imgs}
+              inMode={!!props.match.params.id}
+            />
           </Item>
           <Item
             label="活动简介"

@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
 import { Spin, Table, Avatar, Tag } from 'antd';
-import useSelectedRows from '../../hooks/useSelectedRows';
 import UserSearch from './user-search/user-search';
 import './user.less';
 import { reqUsers } from '../../api/index';
