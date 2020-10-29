@@ -71,6 +71,7 @@ const AddOrUpdateActive = (props: any) => {
   })
   // 表单的实例
   const formRef = useRef<FormInstance>();
+  // console.log(formRef);
   // 编辑器的实例
   const editorRef = useRef<BraftEditor>();
 
@@ -96,7 +97,7 @@ const AddOrUpdateActive = (props: any) => {
       }
       setActiveData(data)
       setEditorStr( BraftEditor.createEditorState(data.detail))
-      console.log(editorStr)
+      // console.log(editorStr)
       formRef.current?.setFieldsValue(data)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,7 +115,7 @@ const AddOrUpdateActive = (props: any) => {
     desc: string;
   }) => {
     const activeDate = [val.time[0]['_d'], val.time[1]['_d']];
-
+    console.log(val.time);
     const activeInfo = {
       title: val['title'],
       time: activeDate,

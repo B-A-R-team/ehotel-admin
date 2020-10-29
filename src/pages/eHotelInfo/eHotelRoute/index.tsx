@@ -6,7 +6,7 @@ export default () => {
     return (
         <Switch>
             <Route path="/eHotelInfo" component={EHotelInfo} exact />
-            <Route path="/eHotelInfo/update" component={EHotelInfoUpdate}   />
+            <Route path="/eHotelInfo/update/:id" component={EHotelInfoUpdate}   />
         </Switch>
     )
 }

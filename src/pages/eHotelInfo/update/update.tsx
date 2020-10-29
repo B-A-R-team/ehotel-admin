@@ -2,22 +2,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-template-curly-in-string */
 import React, { useState, useRef, useEffect } from 'react'
-import { Card, Form, Input, Button, Row, Col } from 'antd';
+import { Card, Form, Input, Button, Row, Col, message } from 'antd';
 import { LeftOutlined } from '@ant-design/icons'
 import Photo from '../photo/photo'
 import AMapLoader from '@amap/amap-jsapi-loader';
 import './update.less'
-
-import {MAP_KEY} from '../../../utils/constant'
+import { MAP_KEY } from '../../../utils/constant'
+import { FormInstance } from 'antd/lib/form';
+import { reqEHotelInfo, reqUpdateHotelInfo } from '../../../api';
+import { useHistory } from 'react-router-dom';
 
 // 无奈 使用全局变量 使用state会有冲突
-let poi = {}
+let poi = {
+    name: '',
+    location: {
+        lat: '',
+        lng: ''
+    }
+}
 
 const layout = {
     labelCol: { span: 12, offset: 0 },
     wrapperCol: { span: 12 },
 };
-
 const validateMessages = {
     required: '${label} 是必须填写的!',
     types: {
@@ -31,11 +38,28 @@ const validateMessages = {
 
 export default (props: any) => {
     const [profileState] = useState(props);
-    const [position,setPosition] = useState('')
-    useEffect(()=> {
-            console.log(position);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    const [hotelInfo, setHotelInfo] = useState({
+        swiperList: [''],
+        id: '',
+        desc: '',
+        latitude: '',
+        longitude: ''
+
+    })
+    // 表单的实例
+    const formRef = useRef<FormInstance>()
+    //获取props
+    useEffect(() => {
+        const id = props.match.params.id
+        reqEHotelInfo(id).then((res: any) => {
+            if (res.code === 0) {
+                console.log(res);
+                setHotelInfo(res.data)
+                formRef.current?.setFieldsValue(res.data)
+            }
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     const title = (
         <span>
             <a href="" onClick={(e) => e.preventDefault()}>
@@ -47,6 +71,22 @@ export default (props: any) => {
     const onFinish = (values: any) => {
         console.log(poi);
         console.log(values);
+        console.log(poi.location.lat)
+        const hotel = {
+            ...hotelInfo,
+            ...values,
+            address:poi.name,
+            latitude: poi.location.lat,
+            longitude: poi.location.lng
+        }
+        setHotelInfo(hotel)
+        reqUpdateHotelInfo(hotel).then((res: any) => {
+            console.log(res);
+            if (res.code === 0) {
+                message.success('修改成功')
+                // props.history.replace('/eHotelInfo')
+            }
+        })
     };
     // 主动给 Input赋值  解决显示bug
     const searchRef = useRef<any>(null)
@@ -93,16 +133,16 @@ export default (props: any) => {
                 // 实例化Autocomplete
                 var placeSearch = new AMap.PlaceSearch({ map })
                 AMap.event.addListener(autoComplete, "select", select);//注册监听，当选中某条记录时会触发
-                function select(e:any) {
+                function select(e: any) {
                     placeSearch.setCity(e.poi.adcode);
+                    console.log(e.poi);
                     placeSearch.search(e.poi.name);  //关键字查询查询
                     // 使用全局变量 
-                    poi = {name : e.poi.name,location:e.poi.location}
+                    poi = { name: e.poi.name, location: e.poi.location }
                     console.log(poi);
-                    if(searchRef) {
-                        searchRef.current.state.value= e.poi.name
+                    if (searchRef) {
+                        searchRef.current.state.value = e.poi.name
                     }
-           
                 }
             })
         })
@@ -115,27 +155,32 @@ export default (props: any) => {
 
             <Card title={title} >
 
-                <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
+                <Form {...layout} name="nest-messages"
+                    onFinish={onFinish}
+                    validateMessages={validateMessages}
+                    ref={formRef as any}
+                    initialValues={{}}
+                >
                     <Row>
                         <Col span={8}>
 
-                            <Form.Item name={['eHotelInfo', 'eHotelName']} label="店名" rules={[{ required: true }]} >
+                            <Form.Item name='title' label="店名" rules={[{ required: true }]} >
                                 <Input />
                             </Form.Item>
-                            <Form.Item name={['eHotelInfo', 'username']} label="负责人姓名" rules={[{ required: true }]} >
+                            <Form.Item name='phone' label="联系电话" rules={[{ required: true }]} >
                                 <Input />
                             </Form.Item>
-                            <Form.Item name={['eHotelInfo', 'phone']} label="联系电话" rules={[{ required: true }]} >
+                            <Form.Item name='open_time' label="营业时间：早">
                                 <Input />
                             </Form.Item>
-                            <Form.Item name={['eHotelInfo', 'email']} label="邮箱" rules={[{ type: 'email' }]}>
+                            <Form.Item name='end_time' label="营业时间：晚">
                                 <Input />
                             </Form.Item>
-                            <Form.Item name={['eHotelInfo', 'introduction']} label="简介">
+                            <Form.Item name='desc' label="简介">
                                 <Input.TextArea />
                             </Form.Item>
                             <Form.Item label="上传头像">
-                                <Photo />
+                                <Photo imgs={hotelInfo.swiperList[0]} setHotelInfo={setHotelInfo} hotelInfo={hotelInfo} />
                             </Form.Item>
                             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
                                 <Button type="primary" htmlType="submit">确定修改</Button>
