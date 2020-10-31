@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef, useEffect } from 'react';
-import { PageHeader, Form, Input, DatePicker, Button, Spin, Modal } from 'antd';
+import { PageHeader, Form, Input, DatePicker, Button, Spin, Modal, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import BraftEditor, { ControlType } from 'braft-editor';
 import 'braft-editor/dist/index.css';
 import { FormInstance } from 'antd/lib/form';
-import UploadImgs from '../../room/upload-imgs/uploadImg';
+import UploadImgs from '../upload-imgs/UploadImgs';
 import useRequest from '../../../hooks/useRequest';
 import './add-update-active.less';
 import {
@@ -61,7 +61,6 @@ const controls = [
 
 const AddOrUpdateActive = (props: any) => {
   const history = useHistory();
-  const [uploadLoading, startUploadLoading] = useRequest();
   const [loading, startLoading] = useRequest(false);
   const [editorStr, setEditorStr] = useState<any>();
   const [isUpdate, setIsUpdate] = useState(false);
@@ -103,12 +102,10 @@ const AddOrUpdateActive = (props: any) => {
       status = 'done';
     }
 
-    console.log(data['detail']);
-
     const active = {
       id: data['id'],
       title: data['topic'],
-      imgs: [`https://www.barteam.cn:1239/${data['img_url']}`],
+      imgs: data['img_url'],
       desc: data['desc'],
       time: [moment(data['start_time']), moment(data['end_time'])],
       startTime: new Date(data['start_time']),
@@ -129,15 +126,9 @@ const AddOrUpdateActive = (props: any) => {
       setIsUpdate(true);
       getUpdateActive(parseInt(props.match.params.id));
 
-      console.log(editorStr);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);
-  // 上传图片组件的配置
-  const uploadConfig = {
-    className: 'avatar-uploader',
-    action: 'https://baidu.com',
-  };
 
   // 提交表单
   const finishForm = (val: {
@@ -146,7 +137,7 @@ const AddOrUpdateActive = (props: any) => {
     desc: string;
   }) => {
     const activeDate = [val.time[0]['_d'], val.time[1]['_d']];
-    console.log(val.time);
+    // console.log(val.time);
     const activeInfo = {
       title: val['title'],
       time: activeDate,
@@ -156,9 +147,8 @@ const AddOrUpdateActive = (props: any) => {
     };
 
     startLoading();
-
     if (props.match.params.id) {
-      console.log(parseInt(props.match.params.id), activeInfo);
+      // console.log(parseInt(props.match.params.id), activeInfo);
       sendUpdate(parseInt(props.match.params.id), activeInfo);
     } else {
       showTips(activeInfo);
@@ -185,8 +175,8 @@ const AddOrUpdateActive = (props: any) => {
       desc: values['desc'],
       hotel_id: 1,
     });
-
-    history.goBack();
+    message.success('修改成功')
+    history.replace('/active/detail/'+id);
   };
 
   // 提交后的提示信息
@@ -210,6 +200,7 @@ const AddOrUpdateActive = (props: any) => {
     Modal.info({
       title: '创建成功',
     });
+    history.replace('/active')
   };
 
   // 重置
@@ -252,8 +243,10 @@ const AddOrUpdateActive = (props: any) => {
           </Item>
           <Item label="宣传图">
             <UploadImgs
-              imgs={activeData.imgs}
               inMode={!!props.match.params.id}
+              activeData={activeData}
+              setActiveData={setActiveData}
+              
             />
           </Item>
           <Item

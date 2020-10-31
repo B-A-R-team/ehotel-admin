@@ -31,8 +31,9 @@ export default function UploadImgs(props: any) {
   useEffect(() => {
     setFileList([])
     const { imgs } = props
+    console.log(imgs);
     //渲染多次导致样式 略有问题
-    if (imgs.length !== 0) {
+    if (imgs && imgs.length !== 0) {
       const fileList = [{
         uid: '-1',
         name: '用户头像',
