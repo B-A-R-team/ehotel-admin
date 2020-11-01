@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import './eHotelInfo.less'
 import { reqEHotelInfo } from '../../api/index'
 import storageUtils from '../../utils/storageUtils'
-import { BASE_URL } from '../../utils/constant';
 
 export default () => {
 
@@ -65,17 +64,13 @@ export default () => {
                         <span>营业时间:晚 {info.end_time}</span>
                         <Divider dashed></Divider>
 
-
-
                         <span>电话: {info.phone}</span>
                         <Divider dashed></Divider>
 
                         <span>简介: {info.desc}</span>
                         <Divider dashed></Divider>
-                        {console.log(info)}
                         <span>地址: {info.address}</span>
                     </div>
-                    {console.log(info.id)}
                     <Link to={`/eHotelInfo/update/${info.id}`} className="ant-btn ant-btn-primary link-btn">修改信息</Link>
                 </div>
             </Card>
