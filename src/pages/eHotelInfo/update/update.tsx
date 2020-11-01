@@ -4,14 +4,11 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Card, Form, Input, Button, Row, Col, message } from 'antd';
 import { LeftOutlined } from '@ant-design/icons'
-import Photo from '../photo/photo'
 import AMapLoader from '@amap/amap-jsapi-loader';
 import './update.less'
 import { MAP_KEY } from '../../../utils/constant'
 import { FormInstance } from 'antd/lib/form';
 import { reqEHotelInfo, reqUpdateHotelInfo } from '../../../api';
-import { useHistory } from 'react-router-dom';
-
 // 无奈 使用全局变量 使用state会有冲突
 let poi = {
     name: '',
@@ -53,7 +50,7 @@ export default (props: any) => {
         const id = props.match.params.id
         reqEHotelInfo(id).then((res: any) => {
             if (res.code === 0) {
-                console.log(res);
+                // console.log(res);
                 setHotelInfo(res.data)
                 formRef.current?.setFieldsValue(res.data)
             }
@@ -69,21 +66,24 @@ export default (props: any) => {
         </span>
     )
     const onFinish = (values: any) => {
-        console.log(poi);
         console.log(values);
         console.log(poi.location.lat)
+        console.log(hotelInfo);
         const hotel = {
             ...hotelInfo,
             ...values,
-            address:poi.name,
-            latitude: poi.location.lat,
-            longitude: poi.location.lng
+            address: poi.name,
+            latitude: poi.location.lat || hotelInfo.latitude,
+            longitude: poi.location.lng || hotelInfo.longitude
         }
+        console.log(hotel);
         setHotelInfo(hotel)
         reqUpdateHotelInfo(hotel).then((res: any) => {
             console.log(res);
             if (res.code === 0) {
                 message.success('修改成功')
+                console.log(props);
+                // props.history.replice('/eHotelInfo')
                 // props.history.replace('/eHotelInfo')
             }
         })
@@ -179,9 +179,9 @@ export default (props: any) => {
                             <Form.Item name='desc' label="简介">
                                 <Input.TextArea />
                             </Form.Item>
-                            <Form.Item label="上传头像">
+                            {/* <Form.Item label="上传头像">
                                 <Photo imgs={hotelInfo.swiperList[0]} setHotelInfo={setHotelInfo} hotelInfo={hotelInfo} />
-                            </Form.Item>
+                            </Form.Item> */}
                             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
                                 <Button type="primary" htmlType="submit">确定修改</Button>
                             </Form.Item>

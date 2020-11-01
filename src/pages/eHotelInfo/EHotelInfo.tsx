@@ -54,13 +54,7 @@ export default () => {
             <Card loading={loading} className="in-card">
                 <div className="ehotel-main">
                     <div className="my-card">
-                        <span>头像：
-                        <Image
-                                width={60}
-                                src={BASE_URL + info.avatar}
-                            />
-                        </span>
-                        <Divider dashed></Divider>
+                 
                         <span>店名: {info.eHotelName}</span>
                         <Divider dashed></Divider>
 
