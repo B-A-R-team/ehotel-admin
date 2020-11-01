@@ -89,14 +89,14 @@ export default function Coupon() {
                 </>
             ),
             onCancel: () => { },
-            onOk: () => {
-                reqDelCoupon(id).then((res: any) => {
-                    console.log(res);
-                    if (res.code === 0 && res.data.affected === 1) {
-                        couponArr[titleIndex].splice(index, 1)
-                        message.success('删除成功')
-                    }
-                })
+            onOk: async () => {
+                const res:any = await  reqDelCoupon(id)
+                if (res.code === 0 && res.data.affected === 1) {
+                    couponArr[titleIndex].splice(index, 1)
+                    message.success('删除成功')
+
+                }
+
             },
             okText: '确定',
             cancelText: '取消'

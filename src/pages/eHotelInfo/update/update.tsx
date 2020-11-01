@@ -85,8 +85,7 @@ export default (props: any) => {
             if (res.code === 0) {
                 message.success('修改成功')
                 console.log(props);
-                // props.history.replice('/eHotelInfo')
-                // props.history.replace('/eHotelInfo')
+                props.history.replace('/')
             }
         })
     };
