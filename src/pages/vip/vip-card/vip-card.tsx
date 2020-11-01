@@ -8,29 +8,29 @@ import {
   Button,
   Form,
   Input,
+  message,
 } from 'antd';
 import './vip-card.less';
+import { CheckOutlined } from '@ant-design/icons';
+import { reqUpdateVipName, reqUpdateVipPhone } from '../../../api/index';
+import Integral from './integral';
 
 const { Meta } = Card;
 
 export interface IVipInfo {
+  id: number | string;
+  nickname: string;
   name: string;
   avatar_url: string;
-  birthday: string;
-  intergal: number | string;
+  phone: string;
+  integral: number | string;
+  paid_balance: number | string;
 }
 
 // 生成VIP简介
-const generatorDesc = (
-  birthday: string,
-  intergal: number | string
-): React.ReactNode => {
+const generatorDesc = (intergal: number | string): React.ReactNode => {
   return (
     <div className="vip-desc">
-      <div className="birthday">
-        <span>生日：</span>
-        <span>{birthday}</span>
-      </div>
       <div className="intergal">
         <span>积分：</span>
         <span>{intergal}</span>
@@ -39,8 +39,15 @@ const generatorDesc = (
   );
 };
 
-const VipCard = ({ info }: { info: IVipInfo }) => {
+const VipCard = ({
+  info,
+  reload,
+}: {
+  info: IVipInfo;
+  reload: () => Promise<void>;
+}) => {
   const [showDetail, setShowDetail] = useState(false);
+  const [showIntegral, setShowIntegral] = useState(false);
 
   return (
     <>
@@ -57,27 +64,38 @@ const VipCard = ({ info }: { info: IVipInfo }) => {
             详情
           </div>,
           <div
-            className="delete-btn btn"
+            className="btn"
             onClick={() => {
-              Modal.confirm({
-                title: '警告',
-                content: '确认删除该记录？',
-              });
+              setShowIntegral(true);
             }}
           >
-            删除
+            积分记录
           </div>,
         ]}
       >
         <Skeleton loading={false} avatar active>
           <Meta
             avatar={<Avatar src={info['avatar_url']} />}
-            title={info['name']}
-            description={generatorDesc(info['birthday'], info['intergal'])}
+            title={info['nickname']}
+            description={generatorDesc(info['integral'])}
           />
         </Skeleton>
       </Card>
-      <VipDetail isShow={showDetail} close={() => setShowDetail(false)} />
+      <VipDetail
+        isShow={showDetail}
+        VipData={info}
+        close={() => setShowDetail(false)}
+      />
+      {showIntegral && (
+        <Integral
+          userId={info['id']}
+          visible={showIntegral}
+          close={() => {
+            reload();
+            setShowIntegral(false);
+          }}
+        />
+      )}
     </>
   );
 };
@@ -85,22 +103,41 @@ const VipCard = ({ info }: { info: IVipInfo }) => {
 export const VipDetail = ({
   isShow,
   close,
+  VipData,
 }: {
   isShow: boolean;
   close: () => void;
+  VipData: IVipInfo;
 }) => {
-  const data = {
-    name: 'xmy',
-    phone: '13213213213',
-    avatar_url:
-      'https://i2.hdslb.com/bfs/face/fe80011baeb9a12706426bdbf39abd9b4b95518d.jpg@87w_88h_1c_100q.webp',
-    idCard: '410041293847593728946',
-    intergal: 20,
-    price: 0,
-    birthday: new Date().toLocaleDateString(),
+  const [showEdit, setShowEdit] = useState(false);
+  const [name, setName] = useState(VipData['name']);
+  const [phone, setPhone] = useState(VipData['phone']);
+
+  const updateName = async () => {
+    if (!name) {
+      return Modal.error({ title: '姓名不能为空' });
+    }
+
+    const res: any = await reqUpdateVipName(Number(VipData['id']), name);
+    if (res['code'] == 0) {
+      message.success('修改成功');
+    } else {
+      message.error('修改失败');
+    }
   };
 
-  const [showEdit, setShowEdit] = useState(false);
+  const updatePhone = async () => {
+    if (!phone) {
+      return Modal.error({ title: '电话号不能为空' });
+    }
+
+    const res: any = await reqUpdateVipPhone(Number(VipData['id']), phone);
+    if (res['code'] == 0) {
+      message.success('修改成功');
+    } else {
+      message.error('修改失败');
+    }
+  };
 
   return (
     <Modal
@@ -109,45 +146,62 @@ export const VipDetail = ({
       onCancel={close}
       footer={
         <>
-          <Button disabled={!showEdit}>提交</Button>
           <Button
             type="primary"
             onClick={() => setShowEdit((showEdit) => !showEdit)}
           >
-            编辑
+            {!showEdit ? '编辑' : '返回'}
           </Button>
         </>
       }
     >
       <Descriptions bordered size="small">
         <Descriptions.Item label="头像">
-          <Avatar src={data['avatar_url']} />
+          <Avatar src={VipData['avatar_url']} />
         </Descriptions.Item>
-        <Descriptions.Item label="姓名">{data['name']}</Descriptions.Item>
-        <Descriptions.Item label="电话">{data['phone']}</Descriptions.Item>
-        <Descriptions.Item label="积分">{data['intergal']}</Descriptions.Item>
-        <Descriptions.Item label="余额">{data['price']}</Descriptions.Item>
-        <Descriptions.Item label="生日">{data['birthday']}</Descriptions.Item>
-        <Descriptions.Item label="身份证">{data['idCard']}</Descriptions.Item>
+        <Descriptions.Item label="余额">
+          {VipData['paid_balance']}
+        </Descriptions.Item>
+        <Descriptions.Item label="积分">
+          {VipData['integral']}
+        </Descriptions.Item>
       </Descriptions>
-      {showEdit ? (
-        <Form style={{ marginTop: '2rem' }}>
-          <Form.Item label="电话" className="desc-form-item">
-            <Input value={data['phone']} />
-          </Form.Item>
-          <Form.Item label="积分" className="desc-form-item">
-            <Input value={data['intergal']} type="number" />
-          </Form.Item>
-          <Form.Item label="生日" className="desc-form-item">
-            <Input value={'2020-01-01'} type="date" />
-          </Form.Item>
-          <Form.Item label="身份证" className="desc-form-item">
-            <Input value={data['idCard']} />
-          </Form.Item>
-        </Form>
-      ) : (
-        ''
-      )}
+      <Form style={{ marginTop: '2rem' }}>
+        <Form.Item label="姓名" className="desc-form-item">
+          <div style={{ display: 'flex' }}>
+            <Input
+              disabled={!showEdit}
+              value={name || VipData['name']}
+              placeholder="未填写"
+              style={{ marginRight: '1rem' }}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <Button
+              disabled={!showEdit}
+              type="primary"
+              icon={<CheckOutlined />}
+              onClick={updateName}
+            />
+          </div>
+        </Form.Item>
+        <Form.Item label="电话" className="desc-form-item">
+          <div style={{ display: 'flex' }}>
+            <Input
+              disabled={!showEdit}
+              value={phone || VipData['phone']}
+              placeholder="未填写"
+              style={{ marginRight: '1rem' }}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <Button
+              disabled={!showEdit}
+              type="primary"
+              icon={<CheckOutlined />}
+              onClick={updatePhone}
+            />
+          </div>
+        </Form.Item>
+      </Form>
     </Modal>
   );
 };

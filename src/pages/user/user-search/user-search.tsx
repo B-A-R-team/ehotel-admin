@@ -80,9 +80,9 @@ const UserSearch: FC<IUserSearchProps> = ({
     let searchRes: IUser[];
 
     if (status === 1) {
-      searchRes = totalTableData.filter((item) => !item['isVip']);
+      searchRes = totalTableData.filter((item) => !item['is_vip']);
     } else if (status === 2) {
-      searchRes = totalTableData.filter((item) => item['isVip']);
+      searchRes = totalTableData.filter((item) => item['is_vip']);
     } else {
       searchRes = totalTableData;
     }

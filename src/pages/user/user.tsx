@@ -10,7 +10,7 @@ export interface IUser {
   nickname: string;
   integral: number | string;
   paid_balance: number | string;
-  isVip: boolean;
+  is_vip: boolean;
   id: string | number;
   key: string | number;
 }
@@ -21,7 +21,7 @@ const data = [
     nickname: '200OK',
     integral: 0,
     paid_balance: 0,
-    isVip: false,
+    is_vip: false,
     id: 1,
     key: 1,
   },
@@ -53,10 +53,10 @@ export default function User() {
     {
       width: '18vw',
       title: '身份',
-      dataIndex: 'isVip',
-      key: 'isVip',
-      render: (isVip: boolean, user: IUser) => {
-        return isVip ? <Tag color="gold">会 员</Tag> : <Tag>普通用户</Tag>;
+      dataIndex: 'is_vip',
+      key: 'is_vip',
+      render: (is_vip: boolean, user: IUser) => {
+        return is_vip ? <Tag color="gold">会 员</Tag> : <Tag>普通用户</Tag>;
       },
     },
     {
@@ -75,6 +75,7 @@ export default function User() {
     const res = await reqUsers();
 
     setLoading(false);
+    console.log(res['data']);
 
     res['data'].forEach((user: IUser) => {
       if (!user['avatar_url']) {

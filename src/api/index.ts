@@ -1,6 +1,7 @@
 import { RecordStatus } from '../pages/record/record';
 import myAxios from './myAxios';
 import { CreateAndUpdateActiveDto } from '../pages/active/addOrUpdateActive/AddOrUpdatective';
+import { CreateLogDto } from '../pages/vip/vip-card/integral';
 // const BASE_URL:string = 'https://www.barteam.cn:1239'
 myAxios.defaults.baseURL = 'https://www.barteam.cn:1239';
 
@@ -192,5 +193,32 @@ export const reqAcitveById = (id: number) => myAxios.get(`/active/list/${id}`);
 export const reqCreateActive = (active: CreateAndUpdateActiveDto) =>
   myAxios.post('/active/create', active);
 
+// 更新活动
 export const reqUpdateActive = (active: CreateAndUpdateActiveDto) =>
   myAxios.put(`/active/update/${active['id']}`, active);
+
+// 获取vip
+export const reqVipList = () => myAxios.get('/user/viplist');
+
+// 更新vip姓名
+export const reqUpdateVipName = (id: number, name: string) =>
+  myAxios.put('/user/changeName', { id, name });
+
+// 更新电话号
+export const reqUpdateVipPhone = (id: number, phone: string) =>
+  myAxios.put('/user/changePhone', { id, phone });
+
+// 获取积分记录
+export const reqIntegralLog = (id: number) =>
+  myAxios.get(`/integralLog/getByUser?userId=${id}`);
+
+// 创建积分记录
+export const reqCreateIntegralLog = (id: number, log: CreateLogDto) =>
+  myAxios.post('/integralLog/create', {
+    user_id: id,
+    ...log,
+  });
+
+// 获取某用户总积分
+export const reqTotalIntegral = (id: number) =>
+  myAxios.get(`/integralLog/getTotalIntegral?userId=${id}`);

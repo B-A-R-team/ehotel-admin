@@ -5,7 +5,7 @@ import EHotelInfo from '../EHotelInfo'
 export default () => {
     return (
         <Switch>
-            <Route path="/eHotelInfo" component={EHotelInfo} exact />
+            <Route path="/" component={EHotelInfo} exact />
             <Route path="/eHotelInfo/update" component={EHotelInfoUpdate}   />
         </Switch>
     )

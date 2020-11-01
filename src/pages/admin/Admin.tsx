@@ -48,7 +48,6 @@ export default () => {
           <HashRouter>
             <Switch>
               <Route path="/carousels" component={Carousels} />
-              <Route path="/eHotelInfo" component={EHotelRoute} />
               <Route path="/room" component={Room} />
               <Route path="/user" component={User} />
               <Route path="/coupon/mycoupon" component={Coupon} />
@@ -56,7 +55,8 @@ export default () => {
               <Route path="/record" component={Record} />
               <Route path="/active" component={MyActive} />
               <Route path="/vip" component={Vip} />
-              <Route component={Analysis} />
+              <Route component={EHotelRoute} />
+              {/* <Route component={Analysis} /> */}
             </Switch>
           </HashRouter>
         </Content>
