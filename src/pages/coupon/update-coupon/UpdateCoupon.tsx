@@ -49,8 +49,6 @@ export default function UpdateCoupon(props: any) {
                 setVisible(false)
             }
         })
-
-
     }
     return (
         <Drawer

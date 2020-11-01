@@ -1,14 +1,39 @@
 import { RecordStatus } from '../pages/record/record';
+import { BASE_URL } from '../utils/constant';
 import myAxios from './myAxios';
 import { CreateAndUpdateActiveDto } from '../pages/active/addOrUpdateActive/AddOrUpdatective';
 import { CreateLogDto } from '../pages/vip/vip-card/integral';
 // const BASE_URL:string = 'https://www.barteam.cn:1239'
-myAxios.defaults.baseURL = 'https://www.barteam.cn:1239';
+myAxios.defaults.baseURL = BASE_URL;
 
 export const reqLogin: any = ({ email, pass }: any) =>
   myAxios.post('/user/login', { email, pass });
 //获取 酒店信息
-export const reqEHotelInfo: any = (id: string) => myAxios('/hotel/list/' + id);
+export const reqEHotelInfo: any = (id: string) => myAxios('/hotel/list/' + id)
+// 修改酒店信息
+export const reqUpdateHotelInfo: any = ({
+  address,
+  desc,
+  end_time,
+  id,
+  latitude,
+  longitude,
+  open_time,
+  phone,
+  swiperList,
+  title
+}: any) => myAxios.put('/hotel/update?id='+ id, {
+  address,
+  desc,
+  end_time,
+  id,
+  latitude,
+  longitude,
+  open_time,
+  phone,
+  swiperList,
+  title
+})
 // 获取 房间房型
 export const reqRoomType: any = () => myAxios('/room/type/list');
 // 添加房型
@@ -126,19 +151,20 @@ export const reqUpdateCoupon = ({
   hotel_id,
   user_id,
   is_used,
-}: any) =>
-  myAxios.put('/coupon/update/' + id, {
-    label,
-    is_full_down,
-    limit_price,
-    reduce_price,
-    start_time,
-    end_time,
-    remarks,
-    hotel_id,
-    user_id,
-    is_used,
-  });
+
+}: any) => myAxios.put('/coupon/update/' + id, {
+  label,
+  is_full_down,
+  limit_price,
+  reduce_price,
+  start_time,
+  end_time,
+  remarks,
+  hotel_id,
+  user_id,
+  is_used
+})
+
 
 // 获取用户
 export const reqUsers = () => myAxios.get('/user/list');

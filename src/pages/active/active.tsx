@@ -113,7 +113,8 @@ const Active = () => {
                 key={index}
                 cover={
                   <Image
-                    style={{ paddingTop: '1rem', paddingBottom: 0 }}
+                    // height={100}
+                    style={{ paddingTop: '1rem', paddingBottom: 0,overflow:"hidden" }}
                     src={`https://www.barteam.cn:1239/${item['image_url']}`}
                   />
                 }

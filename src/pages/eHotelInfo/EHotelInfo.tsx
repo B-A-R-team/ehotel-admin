@@ -5,17 +5,20 @@ import { Link } from 'react-router-dom'
 import './eHotelInfo.less'
 import { reqEHotelInfo } from '../../api/index'
 import storageUtils from '../../utils/storageUtils'
+import { BASE_URL } from '../../utils/constant';
 
 export default () => {
 
     const [loading, setloading] = useState(true);
     const [info, setInfo] = useState({
+        id: '',
         avatar: "",
         eHotelName: '',
-        username: '',
         phone: '',
         address: '',
-        email: ''
+        desc: '',
+        end_time:'',
+        open_time:''
     })
 
     useEffect(() => {
@@ -25,29 +28,20 @@ export default () => {
             setloading(false);
             const { code, data } = hotelInfo
             if (parseInt(code) === 0) {
-                const {address,phone,desc,title,swiperList} = data
+                const { address, phone, desc, title, swiperList, id, end_time, open_time } = data
                 setInfo({
+                    id,
+                    desc,
                     avatar: swiperList[0],
                     eHotelName: title,
-                    username: 'xiaoming',
                     phone,
                     address,
-                    email: 'lts.lyc@qq.com'
+                    end_time,
+                    open_time
                 })
             }
         }
         test()
-        // setTimeout(() => {
-        //     setloading(false);
-        //     setInfo({
-        //         avatar: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-        //         eHotelName: '123',
-        //         username: 'xiaoming',
-        //         phone: '123456',
-        //         address: 'adadasds',
-        //         email: 'lts.lyc@qq.com'
-        //     })
-        // }, 500);
 
     }, [])
     const title = (
@@ -60,31 +54,29 @@ export default () => {
             <Card loading={loading} className="in-card">
                 <div className="ehotel-main">
                     <div className="my-card">
-                        <span>头像：
-                        <Image
-                                width={60}
-                                src={info.avatar}
-                            />
-                        </span>
-                        <Divider dashed></Divider>
+                 
                         <span>店名: {info.eHotelName}</span>
                         <Divider dashed></Divider>
 
-                        <span>负责人: {info.username}</span>
+                        <span>营业时间:早 {info.open_time}</span>
+                        <Divider dashed></Divider>
+                             
+                        <span>营业时间:晚 {info.end_time}</span>
                         <Divider dashed></Divider>
 
-                        <span>邮箱: {info.email}</span>
-                        <Divider dashed></Divider>
+
 
                         <span>电话: {info.phone}</span>
                         <Divider dashed></Divider>
 
+                        <span>简介: {info.desc}</span>
+                        <Divider dashed></Divider>
+
                         <span>地址: {info.address}</span>
                     </div>
-                    <Link to="/eHotelInfo/update" className="ant-btn ant-btn-primary link-btn">修改信息</Link>
+                    <Link to={`/eHotelInfo/update/${info.id}`} className="ant-btn ant-btn-primary link-btn">修改信息</Link>
                 </div>
             </Card>
-
         </Card>
     );
 

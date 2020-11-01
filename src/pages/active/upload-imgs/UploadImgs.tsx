@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-
 import { Upload, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-
+import { BASE_URL, UPLOAD_URL } from '../../../utils/constant';
 
 function getBase64(file: any) {
   return new Promise((resolve, reject) => {
@@ -14,7 +13,6 @@ function getBase64(file: any) {
 }
 
 export default function UploadImgs(props: any) {
-  console.log(props);
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
   const [previewTitle, setPreviewTitle] = useState('')
@@ -27,23 +25,19 @@ export default function UploadImgs(props: any) {
     }
   ])
   const handleCancel = () => setPreviewVisible(false);
-
+  const { activeData,setActiveData } = props
   useEffect(() => {
     setFileList([])
-    const { imgs, inMode } = props
-    // console.log(methodIn);
     //渲染多次导致样式 略有问题
-    if (inMode) { 
-      const fileList = imgs.map((img: string, index: 1) => ({
-        uid: -index,
-        name: 'img.png',
-        status: 'done',
-        url: img,
-      }))
-      setFileList(fileList)
-    }
-    console.log(fileList)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+      if (activeData.imgs && activeData.imgs[0].length !== 0) {
+        const fileList = [{
+          uid: '-1',
+          name: '用户头像',
+          status: 'done',
+          url: BASE_URL + activeData.imgs,
+        }]
+        setFileList(fileList)
+      }
   }, [props])
   const uploadButton = (
     <div>
@@ -52,6 +46,7 @@ export default function UploadImgs(props: any) {
     </div>
   );
   const handlePreview = async (file: any) => {
+    console.log(file);
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
@@ -59,18 +54,26 @@ export default function UploadImgs(props: any) {
     setPreviewVisible(true)
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1))
   };
-  const handleChange = ({ fileList }: any) => setFileList(fileList);
+  const handleChange = ({ file, fileList }: any) => {
+    if (file.response) {
+      setActiveData( {
+        ...activeData,
+        imgs:[file.response.data.path]
+      })
+    }
+    return setFileList(fileList)
+  };
 
   return (
     <>
       <Upload
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        action={UPLOAD_URL}
         listType="picture-card"
         fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}
       >
-        {fileList.length >= 8 ? null : uploadButton}
+        {fileList.length >= 1 ? null : uploadButton}
       </Upload>
       <Modal
         visible={previewVisible}
