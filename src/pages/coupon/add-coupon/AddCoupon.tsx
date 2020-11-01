@@ -1,6 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
 import React, { useState } from 'react';
-import moment from 'moment'
 import {
     Form,
     Input,
@@ -73,7 +72,7 @@ export function AddCoupon() {
 
     };
     const [couponType, setCouponType] = useState(true);
-    const couponTypeChange = (value: any) => {
+    const couponTypeChange = () => {
         setCouponType(!couponType)
     }
 

@@ -14,7 +14,6 @@ import Head from '../../components/header/Header';
 import Coupon from '../coupon';
 import { AddCoupon } from '../coupon/add-coupon/AddCoupon';
 import Record from '../record/record';
-import Analysis from '../analysis/analysis';
 import './Admin.less';
 import MyActive from '../active';
 import Carousels from '../carousels/carousels';

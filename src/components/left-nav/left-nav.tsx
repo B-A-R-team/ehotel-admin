@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Menu } from 'antd';
 import {
   UserOutlined,
-  PieChartOutlined,
   BarsOutlined,
   HomeOutlined,
   BulbOutlined,
@@ -81,7 +80,7 @@ export default function LeftNav() {
 
   return (
     <div className="left-nav">
-      <div className="logo">LOGO</div>
+      <div className="logo">BAR</div>
       <HashRouter>
         <Menu
           theme="dark"

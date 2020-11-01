@@ -97,6 +97,7 @@ export default function Integral({ visible, close, userId }: any) {
 
   useEffect(() => {
     loadLogs();
+    // eslint-disable-next-line
   }, []);
 
   return (

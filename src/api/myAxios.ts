@@ -5,6 +5,12 @@ import { message } from 'antd';
 // Add a request interceptor 阻截器
 axios.interceptors.request.use(function (config) {
   // Do something before request is sent
+  const timestamp = storageUtils.getTime();
+
+  if (Number(timestamp) < Date.now()) {
+    storageUtils.clearAll();
+  }
+
   const token = storageUtils.getToken();
   if (token) {
     config.headers.Authorization = token;
