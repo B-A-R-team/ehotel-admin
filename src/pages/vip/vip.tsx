@@ -20,7 +20,6 @@ const data: IVipInfo[] = [
 
 const Vip = () => {
   const [loading, setLoading] = useState(true);
-  const [searchInfo, setSearchInfo] = useState('');
   const [listData, setListData] = useState(data);
 
   const loadVipList = async () => {
@@ -43,7 +42,11 @@ const Vip = () => {
 
   return (
     <div className="vip-container">
-      <VipSearch info={searchInfo} setInfo={setSearchInfo} />
+      <VipSearch
+        dataList={listData}
+        changeDataList={setListData}
+        reload={loadVipList}
+      />
       <Spin spinning={loading}>
         <div className="vip-list">
           {listData.map((item, index) => (

@@ -6,9 +6,7 @@ import { Table, Button, Spin } from 'antd';
 import './record.less';
 import RecordSearch from './record-search/record-search';
 import RecordCard from './record-card/record-card';
-import useSelectedRows from '../../hooks/useSelectedRows';
 import useInfoWrapper from '../../hooks/useInfoWrapper';
-import useRequest from '../../hooks/useRequest';
 import getQuery from '../../utils/getQuery';
 import { reqAllRecords } from '../../api/index';
 

@@ -1,5 +1,5 @@
 import React, { ReactNode, FC, useState, useEffect } from 'react';
-import { Input, Form, Row, Button, Select, Col, Modal } from 'antd';
+import { Input, Form, Row, Button, Select, Col } from 'antd';
 import './record-search.less';
 import { IRecord } from '../record';
 import { reqAllRecords } from '../../../api/index';
@@ -44,7 +44,6 @@ const options = [
 const RecordSearch: FC<IRecordSearchProps> = ({
   width,
   changeTable,
-  tableData,
   setLoading,
   searchData = { id: '', phone: '', state: '' },
 }: IRecordSearchProps) => {
@@ -55,6 +54,7 @@ const RecordSearch: FC<IRecordSearchProps> = ({
     if (searchData['id']) {
       doSearch();
     }
+    // eslint-disable-next-line
   }, []);
 
   /**
@@ -86,7 +86,9 @@ const RecordSearch: FC<IRecordSearchProps> = ({
     let newRecords: IRecord[] = totalTableData;
 
     if (id) {
-      newRecords = totalTableData.filter((item: IRecord) => item['id'] == id);
+      newRecords = totalTableData.filter(
+        (item: IRecord) => Number(item['id']) === Number(id)
+      );
     }
     if (phone) {
       newRecords = totalTableData.filter((item: IRecord) =>

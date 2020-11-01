@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, ReactNode, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Card,
     Table,
@@ -13,16 +13,9 @@ import { reqRoomByTypeId } from '../../../api'
 import './roomDetail.less'
 import { PAGE_SIZE } from '../../../utils/constant'
  
-interface IRoomData {
-    key: string;
-    roomNum: number;
-    computer: string;
-    imgs: string[];
-    isCheckIn: boolean;
-}
 export default function RoomDetail(props: any) {
     const [loading, setLoading] = useState(true)
-    const [profileState, setProfileState] = useState(props)
+    const [profileState] = useState(props)
     const [data, setData] = useState([{
         key: '',
         roomNum: 0,
@@ -44,7 +37,7 @@ export default function RoomDetail(props: any) {
             <Input
                 style={{ width: 200, margin: '0 10px' }}
                 placeholder='关键字'
-                onChange={(event) => { }}
+                onChange={() => { }}
 
             />
             <Button type='primary' onClick={() => { }}>搜索</Button>
@@ -58,7 +51,7 @@ export default function RoomDetail(props: any) {
 
             if (res.code === 0) {
                 let myArr: any = []
-                res.data.rooms.map((item: any) => {
+                res.data.rooms.forEach((item: any) => {
                     myArr.push({
                         key: item.id,
                         imgs: JSON.parse(item.img_url || "[]"),
@@ -107,6 +100,7 @@ export default function RoomDetail(props: any) {
         //     setData(data)
         //     setLoading(false)
         // }, 1000);
+         // eslint-disable-next-line
     }, [])
     const columns = [
         {
@@ -114,7 +108,7 @@ export default function RoomDetail(props: any) {
             dataIndex: 'roomNum',
             key: 'roomNum',
             width: 110,
-            render: (text: any, item: any, index: any) => (<a>{text}</a>)
+            render: (text: any) => (<a>{text}</a>)
         },
 
         {

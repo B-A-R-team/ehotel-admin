@@ -17,8 +17,8 @@ export default () => {
         phone: '',
         address: '',
         desc: '',
-        end_time:'',
-        open_time:''
+        end_time: '',
+        open_time: ''
     })
 
     useEffect(() => {
@@ -49,18 +49,19 @@ export default () => {
             <span>商家基本信息管理</span>
         </span>
     )
+    // 7ae3f268940a8c483c1186d014c81877c99b05a5
     return (
         <Card title={title} >
             <Card loading={loading} className="in-card">
                 <div className="ehotel-main">
                     <div className="my-card">
-                 
+
                         <span>店名: {info.eHotelName}</span>
                         <Divider dashed></Divider>
 
                         <span>营业时间:早 {info.open_time}</span>
                         <Divider dashed></Divider>
-                             
+
                         <span>营业时间:晚 {info.end_time}</span>
                         <Divider dashed></Divider>
 
@@ -71,9 +72,10 @@ export default () => {
 
                         <span>简介: {info.desc}</span>
                         <Divider dashed></Divider>
-
+                        {console.log(info)}
                         <span>地址: {info.address}</span>
                     </div>
+                    {console.log(info.id)}
                     <Link to={`/eHotelInfo/update/${info.id}`} className="ant-btn ant-btn-primary link-btn">修改信息</Link>
                 </div>
             </Card>

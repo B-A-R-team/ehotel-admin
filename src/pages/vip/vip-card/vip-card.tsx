@@ -119,7 +119,7 @@ export const VipDetail = ({
     }
 
     const res: any = await reqUpdateVipName(Number(VipData['id']), name);
-    if (res['code'] == 0) {
+    if (Number(res['code']) === 0) {
       message.success('修改成功');
     } else {
       message.error('修改失败');
@@ -132,7 +132,7 @@ export const VipDetail = ({
     }
 
     const res: any = await reqUpdateVipPhone(Number(VipData['id']), phone);
-    if (res['code'] == 0) {
+    if (Number(res['code']) === 0) {
       message.success('修改成功');
     } else {
       message.error('修改失败');

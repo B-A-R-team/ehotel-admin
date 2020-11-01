@@ -48,9 +48,11 @@ export default (props: any) => {
     //获取props
     useEffect(() => {
         const id = props.match.params.id
+        console.log(props);
         reqEHotelInfo(id).then((res: any) => {
+            console.log(res);
             if (res.code === 0) {
-                // console.log(res);
+                console.log(res);
                 setHotelInfo(res.data)
                 formRef.current?.setFieldsValue(res.data)
             }

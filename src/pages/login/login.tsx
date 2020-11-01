@@ -10,8 +10,8 @@ import {
 import './login.less';
 import { useHistory } from 'react-router-dom';
 import img_login_url from './wxlogin.png';
-import storageUtils from '../../utils/storageUtils'
-import { reqLogin } from '../../api'
+import storageUtils from '../../utils/storageUtils';
+import { reqLogin } from '../../api';
 
 const { TabPane } = Tabs;
 const { Item } = Form;
@@ -21,43 +21,46 @@ const Login = () => {
   const [isRemember, setRemember] = useState(true);
 
   useEffect(() => {
-    const user_info = storageUtils.getUser()
+    const user_info = storageUtils.getUser();
     if (user_info.id) {
       h.push('/');
     }
-  }, [])
-
+  }, []);
 
   const onFinish = async (values: object) => {
     console.log(values);
-    const user = await reqLogin(values)
+    const user = await reqLogin(values);
     if (isRemember) {
-      storageUtils.saveUser(user.data.user)
-      storageUtils.saveToken(user.data.token)
+      storageUtils.setTime();
+      storageUtils.saveUser(user.data.user);
+      storageUtils.saveToken(user.data.token);
     }
-    h.replace('/')
+    h.replace('/');
   };
   return (
     <div className="login">
       <div className="title">BAR酒店后台管理</div>
       <Tabs defaultActiveKey="1">
         <TabPane tab="邮箱密码登陆" key="1">
-          <Form className="login-form" onFinish={onFinish} >
+          <Form className="login-form" onFinish={onFinish}>
             <Item
               name="email"
-              rules={[{ required: true, message: 'Please input your username!' }]}
+              rules={[
+                { required: true, message: 'Please input your username!' },
+              ]}
             >
               <Input
                 size="large"
                 placeholder="请输入邮箱：123456@email.com"
                 type="email"
                 prefix={<UserOutlined />}
-
               />
             </Item>
             <Item
               name="pass"
-              rules={[{ required: true, message: 'Please input your password!' }]}
+              rules={[
+                { required: true, message: 'Please input your password!' },
+              ]}
             >
               <Input
                 size="large"
