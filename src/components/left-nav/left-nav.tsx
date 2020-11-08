@@ -30,8 +30,8 @@ const menuConfig: ILinkProps[] = [
     url: '/coupon',
     label: '优惠券管理',
     subLink: [
-      { url: '/coupon/mycoupon', label: '我的优惠券', baseUrl: '/coupon' },
-      { url: '/coupon/addcoupon', label: '添加优惠券', baseUrl: '/coupon' },
+      { url: '/mycoupon', label: '我的优惠券', baseUrl: '/coupon' },
+      { url: '/addcoupon', label: '添加优惠券', baseUrl: '/coupon' },
     ],
   },
   { icon: <BoxPlotOutlined />, url: '/carousels', label: '轮播图管理' },

@@ -49,8 +49,8 @@ export default () => {
               <Route path="/carousels" component={Carousels} />
               <Route path="/room" component={Room} />
               <Route path="/user" component={User} />
-              <Route path="/coupon/mycoupon" component={Coupon} />
-              <Route path="/coupon/addcoupon" component={AddCoupon} />
+              <Route path="/mycoupon" component={Coupon} />
+              <Route path="/addcoupon" component={AddCoupon} />
               <Route path="/record" component={Record} />
               <Route path="/active" component={MyActive} />
               <Route path="/vip" component={Vip} />

@@ -26,6 +26,7 @@ export default () => {
             const hotelInfo = await reqEHotelInfo(hotelId)
             setloading(false);
             const { code, data } = hotelInfo
+            console.log(data);
             if (parseInt(code) === 0) {
                 const { address, phone, desc, title, swiperList, id, end_time, open_time } = data
                 setInfo({

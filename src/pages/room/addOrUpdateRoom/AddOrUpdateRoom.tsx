@@ -106,7 +106,6 @@ export default function AddOrUpdateRoom(props: any) {
             // console.log(data.data);
         })
 
-
         async function getRoomType() {
             const roomType = await reqRoomType()
             if (roomType.code === 0) {
@@ -167,11 +166,12 @@ export default function AddOrUpdateRoom(props: any) {
     //添加或修改房间类型
     const handleRoomType = async () => {
         if (houseTypeId) {
+            console.log(roomTypeData);
             const data = await reqUpdateRoomType({
                 id: houseTypeId,
                 type_name: roomTypeData.roomType,
                 area: roomTypeData.roomArea,
-                floor: roomTypeData.floor[0]
+                floor: [roomTypeData.floor]
             })
             console.log(data.code);
             if (data.code === 0) {
