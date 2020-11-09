@@ -184,7 +184,7 @@ export default function AddOrUpdateRoom(props: any) {
         console.log(roomTypeData)
         const data = await reqRoomeTypeCreate(roomTypeData)
         console.log(data);
-        console.log(roomTypeData)
+        // console.log(roomTypeData)
         return message.success('添加成功');
 
     }
@@ -211,6 +211,7 @@ export default function AddOrUpdateRoom(props: any) {
             const res = await reqUpdateRoom({ id: addHouseId, ...data })
             console.log(res);
             if (res.code === 0) {
+                // console.log(data);
                 return message.success('修改成功')
 
             } else {
@@ -280,7 +281,7 @@ export default function AddOrUpdateRoom(props: any) {
                         </Form.Item>
                         {getForm(roomData, setRoomData, labelRoomInfo1)}
                         <Form.Item label="房间图片" wrapperCol={{ span: 24 }}>
-                            <UploadImgs imgs={roomData.imgs} inMode={!!addHouseId} />
+                            <UploadImgs room={{roomData,setRoomData}} inMode={!!addHouseId} />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }} >
                             <Button type="primary" onClick={handleRoom}>

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import { Upload, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { BASE_URL, UPLOAD_URL } from '../../../utils/constant';
+
+
 
 function getBase64(file: any) {
   return new Promise((resolve, reject) => {
@@ -22,24 +25,30 @@ export default function UploadImgs(props: any) {
       name: '',
       status: '',
       url: '',
+      pathname: ''
     },
   ]);
   const handleCancel = () => setPreviewVisible(false);
-
+  const { room, inMode } = props;
+  const { roomData, setRoomData } = room
+  //收集 上传图片的路径
+  let myImgs: string[] = []
   useEffect(() => {
     setFileList([]);
-    const { imgs, inMode } = props;
-    // console.log(methodIn);
     //渲染多次导致样式 略有问题
-    if (inMode) {
-      const fileList = imgs.map((img: string, index: 1) => ({
+    if (inMode && roomData.imgs[0] && roomData.imgs[0].length > 0) {
+      const fileList = roomData.imgs.map((img: string, index: 1) => ({
         uid: -index,
         name: 'img.png',
         status: 'done',
-        url: img,
+        url: BASE_URL + img,
+        pathname: img
       }));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      myImgs = roomData.imgs
       setFileList(fileList);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);
   const uploadButton = (
     <div>
@@ -57,12 +66,27 @@ export default function UploadImgs(props: any) {
       file.name || file.url.substring(file.url.lastIndexOf('/') + 1)
     );
   };
-  const handleChange = ({ fileList }: any) => setFileList(fileList);
+  const handleChange = ({ file, fileList }: any) => {
+    console.log(file);
+    if (file.status === 'removed') {
+      myImgs.splice(myImgs.indexOf(file.pathname), 1)
+    }
+    console.log(myImgs);
+    if (file.response) {
+      myImgs.push(file.response.data.path)
+      setRoomData({
+        ...roomData,
+        imgs: myImgs
+      });
+    }
+
+    return setFileList(fileList);
+  };
 
   return (
     <>
       <Upload
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        action={UPLOAD_URL}
         listType="picture-card"
         fileList={fileList}
         onPreview={handlePreview}
