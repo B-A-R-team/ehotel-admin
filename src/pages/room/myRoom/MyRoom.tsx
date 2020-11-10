@@ -9,11 +9,13 @@ import {
   Space,
 } from 'antd'
 
-import { reqRoomType } from '../../../api'
-import {PAGE_SIZE} from '../../../utils/constant'
+import { reqRoomByTypeId, reqRoomType } from '../../../api'
+import { PAGE_SIZE } from '../../../utils/constant'
 import './myRoom.less'
 
 export default function Room(props: any) {
+ //解决使用usestate不能马上更新的问题
+  let rooms:any =[]
   const [loading, setLoadibg] = useState(true)
   const [data, setData] = useState([{
     key: '',
@@ -21,30 +23,38 @@ export default function Room(props: any) {
     rest: 0,
     introduction: '',
     tags: '',
-    roomArea:'50',
-    floor:'11'
+    roomArea: '50',
+    floor: '11'
   }])
   useEffect(() => {
     setData([])
-    async function request() {
-      const roomType = await reqRoomType()
-      // console.log(roomType);
+    reqRoomType().then((roomType: any) => {
       const collatedRoomType = roomType.data.map((item: any) => {
+        // console.log(item);
         item.tags = item.type_name
         item.key = item.id
-        item.roomArea = item.area
-        item.floor = item.floor[0]
         item.total = 10
         item.rest = 5
-        delete item.type_name  
+        item.roomArea = item.area
+        item.floor = item.floor[0]
+        delete item.type_name
         delete item.area
         return item
       })
-      // console.log(collatedRoomType);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      rooms = collatedRoomType
       setData(collatedRoomType)
-      setLoadibg(false)
-    }
-    request()
+      rooms.forEach((item:any,index:number) => {
+        reqRoomByTypeId(item.key).then((res:any) => {
+          console.log(rooms);
+          rooms[index].total = res.data.rooms.length
+          rooms[index].rest = res.data.rooms.filter((item:any) => item.is_used === false).length
+          setData(rooms)
+        })
+      })
+
+    })
+    setLoadibg(false)
 
   }, [])
   const columns = [

@@ -47,8 +47,7 @@ export default function RoomDetail(props: any) {
     useEffect(() => {
         setData([])
         reqRoomByTypeId(props.match.params.houseId).then((res: any) => {
-            // console.log(res.data.rooms);
-
+            console.log(res.data.rooms);
             if (res.code === 0) {
                 let myArr: any = []
                 res.data.rooms.forEach((item: any) => {
@@ -67,39 +66,7 @@ export default function RoomDetail(props: any) {
 
             }
         })
-        // setTimeout(() => {
-        //     const data = [
-        //         {
-        //             key: '1',
-        //             roomNum: 101,
-        //             computer: '高配电脑',
-        //             imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        //                 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-        //             isCheckIn: true,
-        //             bed: '2',
-        //             shower: '啦啦啦啦啦舒畅',
-        //             computerNum: '1',
-        //             people_count: '2',
-        //             roomInfo: ''
-        //         },
-        //         {
-        //             key: '2',
-        //             roomNum: 301,
-        //             computer: '高配电脑',
-        //             imgs: ['https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'],
-        //             isCheckIn: false,
-        //             bed: '2',
-        //             shower: '啦啦啦啦啦舒畅',
-        //             computerNum: '1',
-        //             people_count: '2',
-        //             roomInfo: ''
 
-        //         },
-
-        //     ];
-        //     setData(data)
-        //     setLoading(false)
-        // }, 1000);
          // eslint-disable-next-line
     }, [])
     const columns = [
