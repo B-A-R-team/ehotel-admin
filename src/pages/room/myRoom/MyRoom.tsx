@@ -43,20 +43,24 @@ export default function Room(props: any) {
       })
       // eslint-disable-next-line react-hooks/exhaustive-deps
       rooms = collatedRoomType
-      setData(collatedRoomType)
+      // setData(collatedRoomType)
       rooms.forEach((item:any,index:number) => {
         reqRoomByTypeId(item.key).then((res:any) => {
-          console.log(rooms);
           rooms[index].total = res.data.rooms.length
           rooms[index].rest = res.data.rooms.filter((item:any) => item.is_used === false).length
-          setData(rooms)
+          if(index === rooms.length - 1) {
+            // 通过这个总结出来一个东西 setData多次调用 只会默认显示 出来一个然后其他的，界面不会触发渲染
+            // 头疼的玩意，然后采取了只让setData最后一次的rooms
+            setData(rooms)
+            setLoadibg(false)
+          } 
         })
       })
 
     })
-    setLoadibg(false)
 
   }, [])
+
   const columns = [
     {
       title: '序号',
