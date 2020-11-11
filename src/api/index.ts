@@ -22,7 +22,7 @@ export const reqUpdateHotelInfo: any = ({
   phone,
   swiperList,
   title
-}: any) => myAxios.put('/hotel/update?id='+ id, {
+}: any) => myAxios.put('/hotel/update?id=' + id, {
   address,
   desc,
   end_time,
@@ -96,6 +96,7 @@ export const reqUpdateRoom: any = ({
   computer_info,
   typeId,
   hotelId,
+  is_used
 }: any) =>
   myAxios.put('/room/update/' + id, {
     title,
@@ -107,7 +108,11 @@ export const reqUpdateRoom: any = ({
     computer_info,
     typeId,
     hotelId,
+    is_used
   });
+// 删除房间
+export const reqDelRoom: any = (id: number) => myAxios.delete('/room/delete/' + id)
+
 //  获取所有优惠券
 export const reqAllCoupon: any = () => myAxios('/coupon/list');
 

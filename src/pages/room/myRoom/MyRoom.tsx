@@ -33,8 +33,8 @@ export default function Room(props: any) {
         // console.log(item);
         item.tags = item.type_name
         item.key = item.id
-        item.total = 10
-        item.rest = 5
+        item.total = '加载中'
+        item.rest = '加载中'
         item.roomArea = item.area
         item.floor = item.floor[0]
         delete item.type_name

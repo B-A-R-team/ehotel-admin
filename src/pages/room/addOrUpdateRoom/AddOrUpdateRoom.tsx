@@ -71,7 +71,7 @@ export default function AddOrUpdateRoom(props: any) {
         roomNum: '',
         imgs: [''],
         price: '',
-        title:''
+        title: ''
 
     })
 
@@ -125,7 +125,7 @@ export default function AddOrUpdateRoom(props: any) {
         if (addHouseId) {
             reqRoomById(addHouseId).then((res: any) => {
                 const { data } = res
-                console.log(res);
+                // console.log(res);
                 let myRoomInfo = {
                     id: data.type.id.toString() || '未知错误',
                     title: data.title,
@@ -136,7 +136,7 @@ export default function AddOrUpdateRoom(props: any) {
                     computerInfo: JSON.parse(data.computer_info || "{}"),
                     imgs: JSON.parse(data.img_url || "[]")
                 }
-                console.log(myRoomInfo);
+                // console.log(myRoomInfo);
 
                 setRoomData({
                     id: myRoomInfo.id,
@@ -144,7 +144,7 @@ export default function AddOrUpdateRoom(props: any) {
                     imgs: myRoomInfo.imgs,
                     price: myRoomInfo.price,
                     roomNum: myRoomInfo.roomNum,
-                    title:myRoomInfo.title
+                    title: myRoomInfo.title
                 })
                 setRoomInfo({ ...myRoomInfo.roomInfo })
                 setComputerConfig({ ...myRoomInfo.computerInfo })
@@ -166,14 +166,14 @@ export default function AddOrUpdateRoom(props: any) {
     //添加或修改房间类型
     const handleRoomType = async () => {
         if (houseTypeId) {
-            console.log(roomTypeData);
+            // console.log(roomTypeData);
             const data = await reqUpdateRoomType({
                 id: houseTypeId,
                 type_name: roomTypeData.roomType,
                 area: roomTypeData.roomArea,
                 floor: [roomTypeData.floor]
             })
-            console.log(data.code);
+            // console.log(data.code);
             if (data.code === 0) {
                 h.replace('/room')
                 return message.success('修改成功');
@@ -181,10 +181,11 @@ export default function AddOrUpdateRoom(props: any) {
                 return message.error('修改失败');
             }
         }
-        console.log(roomTypeData)
+        // console.log(roomTypeData)
         const data = await reqRoomeTypeCreate(roomTypeData)
         console.log(data);
         // console.log(roomTypeData)
+        h.replace('/room')
         return message.success('添加成功');
 
     }
@@ -194,9 +195,9 @@ export default function AddOrUpdateRoom(props: any) {
         const computer_info = JSON.stringify(computerConfig)
         const room_info = JSON.stringify(roomInfo)
         // 找到当前选中type_name
-        const seletTitle =  selectArr.find((item:any) => item.id.toString() === roomData.id) || {type_name:''}
+        const seletTitle = selectArr.find((item: any) => item.id.toString() === roomData.id) || { type_name: '' }
         const data = {
-            title:seletTitle.type_name,
+            title: seletTitle.type_name,
             room_num: roomData.roomNum,
             new_price: roomData.price,
             desc: roomData.introduction,
@@ -207,11 +208,13 @@ export default function AddOrUpdateRoom(props: any) {
             hotelId: userInfo.id
         }
         if (addHouseId) {
-            console.log(data);
+            // console.log(data);
             const res = await reqUpdateRoom({ id: addHouseId, ...data })
-            console.log(res);
+            // console.log(res);
             if (res.code === 0) {
                 // console.log(data);
+                console.log(addHouseId);
+                h.replace('/room/detail/' + roomData.id)
                 return message.success('修改成功')
 
             } else {
@@ -220,8 +223,8 @@ export default function AddOrUpdateRoom(props: any) {
             }
         }
         const res = await reqAddRoom(data)
-        console.log(res);
         if (res.code === 0) {
+            h.replace('/room')
             message.success('添加成功');
         }
     }
@@ -239,7 +242,7 @@ export default function AddOrUpdateRoom(props: any) {
                         </Form.Item>
                         <Form.Item label="房间面积" rules={[{ required: true }]}>
                             <InputNumber value={roomTypeData.roomArea} onChange={(e: any) => {
-                                console.log(e);
+                                // console.log(e);
                                 return setRoomTypeData({ ...roomTypeData, roomArea: parseInt(e) })
                             }} />
                         </Form.Item>
@@ -281,7 +284,7 @@ export default function AddOrUpdateRoom(props: any) {
                         </Form.Item>
                         {getForm(roomData, setRoomData, labelRoomInfo1)}
                         <Form.Item label="房间图片" wrapperCol={{ span: 24 }}>
-                            <UploadImgs room={{roomData,setRoomData}} inMode={!!addHouseId} />
+                            <UploadImgs room={{ roomData, setRoomData }} inMode={!!addHouseId} />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }} >
                             <Button type="primary" onClick={handleRoom}>
@@ -333,7 +336,7 @@ function getForm(state: any, setState: any, label: any) {
     return label.map((item: ILabel, index: number) => {
         if (item.label === '浴室配置') {
             return (
-                <Form.Item label={item.label}  key={index}>
+                <Form.Item label={item.label} key={index}>
                     <Input.TextArea value={state[item.attrName]} onChange={(e: any) => {
                         let _state = { ...state }
                         _state[item.attrName] = e.target.value
@@ -341,8 +344,8 @@ function getForm(state: any, setState: any, label: any) {
                     }} />
                 </Form.Item>
             )
-           
-        } else if(item.label === '房间价格' || item.label === '电脑数量' || item.label === '床位量' || item.label === '人数') {
+
+        } else if (item.label === '房间价格' || item.label === '电脑数量' || item.label === '床位量' || item.label === '人数') {
             return (
                 <Form.Item label={item.label} key={index}>
                     <InputNumber value={state[item.attrName]} onChange={(e: any) => {

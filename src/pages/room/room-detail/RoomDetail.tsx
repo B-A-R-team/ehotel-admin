@@ -6,16 +6,19 @@ import {
     Table,
     Input,
     Button,
-    Image
+    Image,
+    message
 } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
-import { reqRoomByTypeId } from '../../../api'
+import { reqRoomByTypeId, reqDelRoom, reqRoomById, reqUpdateRoom } from '../../../api'
 import './roomDetail.less'
-import { PAGE_SIZE } from '../../../utils/constant'
- 
+import { BASE_URL, PAGE_SIZE } from '../../../utils/constant'
+import Modal from 'antd/lib/modal/Modal';
+
 export default function RoomDetail(props: any) {
     const [loading, setLoading] = useState(true)
     const [profileState] = useState(props)
+    const [modal, contextHolder] = Modal.useModal();
     const [data, setData] = useState([{
         key: '',
         roomNum: 0,
@@ -27,7 +30,7 @@ export default function RoomDetail(props: any) {
     const title = (
         <span>
             <a href="" onClick={(e) => e.preventDefault()}>
-                <LeftOutlined onClick={() => { profileState.history.goBack() }} />
+                <LeftOutlined onClick={() => { profileState.history.push('/room') }} />
             </a>
             <span>&nbsp;详细信息</span>
         </span>
@@ -47,7 +50,7 @@ export default function RoomDetail(props: any) {
     useEffect(() => {
         setData([])
         reqRoomByTypeId(props.match.params.houseId).then((res: any) => {
-            console.log(res.data.rooms);
+            // console.log(res.data.rooms);
             if (res.code === 0) {
                 let myArr: any = []
                 res.data.rooms.forEach((item: any) => {
@@ -67,7 +70,7 @@ export default function RoomDetail(props: any) {
             }
         })
 
-         // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [])
     const columns = [
         {
@@ -89,12 +92,12 @@ export default function RoomDetail(props: any) {
                     <div className="computer">
                         <span>cpu：{data.cpu || "暂无记录"}</span>
                         <span>显卡：{data.gpu || "暂无记录"}</span>
-                        <span>显示器：{data.device || "暂无记录"}</span>
                         <span>主板：{data.mainboard || "暂无记录"}</span>
                         <span>内存：{data.memory || "暂无记录"}</span>
                         <span>键盘：{data.keyboard || "暂无记录"}</span>
                         <span>鼠标：{data.mouse || "暂无记录"}</span>
                         <span>耳机：{data.earphone || "暂无记录"}</span>
+                        <span>显示器：{data.device || "暂无记录"}</span>
                     </div>
                 )
             }
@@ -151,7 +154,7 @@ export default function RoomDetail(props: any) {
                             key={index}
                             style={{ marginRight: 10 }}
                             width={80}
-                            src={item}
+                            src={BASE_URL + item}
                         />
                     )
                 })
@@ -162,8 +165,10 @@ export default function RoomDetail(props: any) {
             dataIndex: 'isCheckIn',
             key: 'isCheckIn',
             width: 150,
-            render: (status: Boolean) => <div style={{ textAlign: "center" }}>
-                <span className={!status ? 'isCheckIn notCheck' : 'isCheckIn'} >{!status ? '未入住' : '已入住'}</span>
+            render: (status: Boolean, record: any) => <div style={{ textAlign: "center" }}>
+                <span
+                    className={!status ? 'isCheckIn notCheck' : 'isCheckIn'}
+                    onClick={() => { record.isCheckIn && updateRoomStatus(record) }} >{!status ? '未入住' : '已入住'}</span>
             </div>
         },
         {
@@ -173,15 +178,80 @@ export default function RoomDetail(props: any) {
             render: (record: any) => {
                 return (
                     <>
-                        <a onClick={() => { props.history.push({ pathname: '/room/addOrUpdateRoom', query: { addHouseId: record.key } }) }}>点击修改</a>
-                        {record.isCheckIn ? (<span>暂无详情</span>) : (<a onClick={() => { }}>查看详情</a>)}
+                        <Button type="primary" ghost onClick={() => { props.history.push({ pathname: '/room/addOrUpdateRoom', query: { addHouseId: record.key } }) }}>点击修改</Button>
+                        {record.isCheckIn ? (<Button danger disabled
+                            style={{ display: 'inline-block', margin: '20px 0' }}>
+                            点击删除</Button>) : (<Button
+                                danger
+                                style={{ display: 'inline-block', margin: '20px 0' }}
+                                onClick={() => { deleteARoom(record.key) }}
+                            >点击删除</Button>)}
+
+
+                        {record.isCheckIn ? (<Button ghost disabled >暂无详情</Button>) : (<Button onClick={() => { }}>查看详情</Button>)}
                     </>
                 )
             }
         }
     ];
+    const deleteARoom = (id: number) => {
+        // setVisible(true)
+        modal.confirm({
+            title: '删除该房间!',
+            content: (
+                <>
+                    你确定要删除该间房间么？
+                </>
+            ),
+            onCancel: () => { },
+            onOk: async () => {
+                const res = await reqDelRoom(id)
+                // console.log(res);
+                if (res.code === 0 && res.data.affected === 1) {
+                    data.splice(id, 1)
+                    message.success('删除成功')
+                }
+            },
+            okText: '确定',
+            cancelText: '取消'
+        })
+    }
+    const updateRoomStatus = (record: any) => {
+        if (record.isCheckIn) {
+            modal.confirm({
+                title: '修改房间状态!',
+                content: (
+                    <>
+                       <p style={{color:'red'}}>请务必要确保客人已经离开或者房间已经到期。</p>
+                       <p>你确定要修改房间状态么？</p>
+                    </>
+                ),
+                onCancel: () => { },
+                onOk: async () => {
+                   const res = await reqRoomById(record.key)
+                    if(res.code === 0) {
+                        res.data.is_used = !record.isCheckIn
+                        const updateStatus = await reqUpdateRoom(res.data)
+                        if(updateStatus.code === 0 && updateStatus.data.affected === 1) {
+                            const updateRoomArr = data.map((item:any) => {
+                                if(item.key === record.key) {
+                                    item.isCheckIn = false
+                                }
+                                return item
+                            })
+                            setData(updateRoomArr)
+                            message.success('变更成功')
+                        }
+                    }
+                },
+                okText: '确定',
+                cancelText: '取消'
+            })
+        }
+    }
     return (
         <Card className="card" title={title}>
+            {contextHolder}
             <Card title={tableTitle}>
                 <Table
                     columns={columns}
@@ -192,7 +262,7 @@ export default function RoomDetail(props: any) {
                         defaultPageSize: PAGE_SIZE,
                         total: 4,
                         showQuickJumper: true,
-                        onChange: (e) => { console.log(e); },
+                        onChange: () => { },
                         position: ['bottomCenter']
 
                     }}
@@ -202,4 +272,5 @@ export default function RoomDetail(props: any) {
 
         </Card>
     )
+
 } 

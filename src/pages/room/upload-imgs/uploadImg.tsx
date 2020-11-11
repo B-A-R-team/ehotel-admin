@@ -14,8 +14,11 @@ function getBase64(file: any) {
     reader.onerror = (error) => reject(error);
   });
 }
+//收集 上传图片的路径
+let myImgs: string[] = []
 
 export default function UploadImgs(props: any) {
+
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -31,8 +34,6 @@ export default function UploadImgs(props: any) {
   const handleCancel = () => setPreviewVisible(false);
   const { room, inMode } = props;
   const { roomData, setRoomData } = room
-  //收集 上传图片的路径
-  let myImgs: string[] = []
   useEffect(() => {
     setFileList([]);
     //渲染多次导致样式 略有问题
@@ -46,8 +47,10 @@ export default function UploadImgs(props: any) {
       }));
       // eslint-disable-next-line react-hooks/exhaustive-deps
       myImgs = roomData.imgs
-      setFileList(fileList);
-    }
+      return setFileList(fileList);
+    } 
+    myImgs = roomData.imgs
+    setFileList(fileList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);
   const uploadButton = (
@@ -67,19 +70,16 @@ export default function UploadImgs(props: any) {
     );
   };
   const handleChange = ({ file, fileList }: any) => {
-    console.log(file);
     if (file.status === 'removed') {
       myImgs.splice(myImgs.indexOf(file.pathname), 1)
     }
-    console.log(myImgs);
-    if (file.response) {
+    if (file.response && file.status === 'done') {
       myImgs.push(file.response.data.path)
       setRoomData({
         ...roomData,
         imgs: myImgs
       });
     }
-
     return setFileList(fileList);
   };
 
